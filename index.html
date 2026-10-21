@@ -1,0 +1,593 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Raum &amp; Muster</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Grandstander:wght@600;800&family=Gochi+Hand&display=swap">
+<style>
+/* Layout: one narrow column like a worksheet; coloured bars on the left mark basic (yellow) and extended (green) tasks. */
+:root{
+  --paper:#fbfcfe; --sheet:#ffffff; --ink:#1d2742; --muted:#5d6782; --line:#cfd8e4; --grid:#c9d4e2; --gridfaint:rgba(120,150,190,.10);
+  --blue:#1c3f9c; --pencil:#3b3b40; --red:#d0302f; --teacher:#0b8a68; --teachersoft:#d9f2ea; --orange:#e07b00;
+  --yellow:#e8e070; --green:#5fb565; --selected:#bfe8cf; --pair1:#ffd6a5; --pair2:#bde0fe; --pair3:#d8c8ff; --clash:#ffb3b3;
+  --die-front:#d93a33; --die-top:#ef5b52; --die-side:#b02a25;
+  --f-display:"Grandstander","Comic Sans MS","Trebuchet MS",sans-serif;
+  --f-body:"Andika","Segoe UI","Helvetica Neue",Arial,sans-serif;
+  --f-hand:"Gochi Hand","Comic Sans MS",cursive;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#121826; --sheet:#1a2233; --ink:#e8edf7; --muted:#a3adc4; --line:#33405a; --grid:#3a4863; --gridfaint:rgba(140,170,220,.07);
+  --blue:#86a8ff; --pencil:#ececf2; --red:#ff6f6b; --teacher:#41d3a8; --teachersoft:#173d36; --orange:#ffa53d;
+  --yellow:#c9c055; --green:#4fa857; --selected:#1f5a3c; --pair1:#6b4a24; --pair2:#1f4a6e; --pair3:#4a3a7a; --clash:#7a2a2a;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#121826; --sheet:#1a2233; --ink:#e8edf7; --muted:#a3adc4; --line:#33405a; --grid:#3a4863; --gridfaint:rgba(140,170,220,.07);
+  --blue:#86a8ff; --pencil:#ececf2; --red:#ff6f6b; --teacher:#41d3a8; --teachersoft:#173d36; --orange:#ffa53d;
+  --yellow:#c9c055; --green:#4fa857; --selected:#1f5a3c; --pair1:#6b4a24; --pair2:#1f4a6e; --pair3:#4a3a7a; --clash:#7a2a2a;
+  color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.5;
+  background-image:linear-gradient(var(--gridfaint) 1px,transparent 1px),linear-gradient(90deg,var(--gridfaint) 1px,transparent 1px);
+  background-size:22px 22px}
+.wrap{max-width:860px;margin:0 auto;padding-block:20px 48px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;line-height:1.15;margin:0}
+h1{font-size:clamp(30px,6vw,44px);font-weight:800;color:var(--blue)}
+h2{font-size:22px;font-weight:600}
+h3{font-size:19px;font-weight:600}
+p{margin:0}
+.intro{display:grid;gap:8px;margin-bottom:22px}
+.intro p{max-width:62ch;color:var(--muted)}
+.total{font-family:var(--f-hand);color:var(--teacher);font-size:22px}
+.group{display:grid;gap:10px;margin-top:22px}
+.group>h2{color:var(--ink)}
+.group>p{color:var(--muted);font-size:15px;max-width:62ch}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+.card{display:grid;grid-template-columns:10px 1fr auto;align-items:stretch;background:var(--sheet);border:1px solid var(--line);
+  border-radius:6px;overflow:hidden;cursor:pointer;text-align:left;font:inherit;color:inherit;padding:0}
+.card:hover{border-color:var(--blue)}
+.card:focus-visible,button:focus-visible{outline:3px solid var(--orange);outline-offset:2px}
+.bar{background:var(--green)}
+.bar.grund{background:var(--yellow)}
+.card .txt{padding:12px 10px 12px 14px;display:grid;gap:2px;min-width:0}
+.card .num{font-family:var(--f-display);font-size:14px;color:var(--muted)}
+.card .ttl{font-weight:700;line-height:1.25}
+.card .dsc{font-size:14px;color:var(--muted)}
+.card .plant{padding:10px 12px 10px 0;display:flex;align-items:flex-end}
+.plant svg{width:34px;height:34px}
+.plant svg *{stroke:var(--teacher);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.plant svg .fill{fill:var(--teacher)}
+.plant svg .soil{stroke:var(--muted)}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:14px;color:var(--muted);align-items:center}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{display:inline-block;width:10px;height:18px;border-radius:2px}
+
+/* exercise page */
+.back{background:none;border:0;color:var(--blue);font:inherit;font-weight:700;cursor:pointer;padding:6px 0;margin-bottom:8px}
+.sheet{background:var(--sheet);border:1px solid var(--line);border-radius:6px;display:grid;grid-template-columns:12px 1fr;overflow:hidden}
+.sheet .inner{padding:18px clamp(12px,3vw,26px) 22px;display:grid;gap:16px;min-width:0}
+.head{display:grid;gap:4px}
+.head .num{font-family:var(--f-display);color:var(--muted);font-size:15px}
+.level{font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.howto{background:var(--paper);border:1px dashed var(--line);border-radius:6px;padding:12px 14px;display:grid;gap:6px}
+.howto b{font-family:var(--f-display);font-weight:600}
+.howto ol,.howto ul{margin:0;padding-left:22px;display:grid;gap:3px}
+.task{display:grid;gap:14px;min-width:0}
+.boardwrap{overflow-x:auto;padding:4px 0}
+svg.board{display:block;width:100%;height:auto;touch-action:manipulation;cursor:crosshair;user-select:none}
+.gl{stroke:var(--grid);stroke-width:1}
+.given{stroke:var(--blue);stroke-width:4;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.drawn{stroke:var(--pencil);stroke-width:3.2;stroke-linecap:round}
+.bad{stroke:var(--red);stroke-width:4;stroke-linecap:round}
+.sol{stroke:var(--teacher);stroke-width:3;stroke-dasharray:6 5;stroke-linecap:round;fill:none}
+.hint{stroke:var(--orange);stroke-width:5;stroke-linecap:round;opacity:.75}
+.pen{fill:var(--orange)}
+.ring{fill:none;stroke:var(--orange);stroke-width:2.5;stroke-dasharray:4 3}
+.axis{stroke:var(--red);stroke-width:2.5;stroke-dasharray:8 6}
+.arrow{stroke:var(--red);fill:var(--red);stroke-width:3.5;stroke-linecap:round}
+.seq{font-family:var(--f-display);font-size:22px;font-weight:600;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.seq .chip{display:inline-grid;place-items:center;min-width:38px;height:38px;border:2px solid var(--blue);border-radius:6px;color:var(--blue);font-variant-numeric:tabular-nums}
+.btns{display:flex;flex-wrap:wrap;gap:8px}
+button.b{font:inherit;font-size:16px;font-weight:700;padding:9px 14px;border-radius:8px;border:2px solid var(--line);background:var(--sheet);color:var(--ink);cursor:pointer}
+button.b:hover{border-color:var(--blue)}
+button.b.go{background:var(--teacher);border-color:var(--teacher);color:var(--sheet)}
+button.b.soft{color:var(--muted);font-weight:400}
+.feedback{font-family:var(--f-hand);font-size:24px;line-height:1.25;min-height:30px;color:var(--ink)}
+.feedback.good{color:var(--teacher)}
+.feedback.bad{color:var(--red)}
+.feedback.info{color:var(--muted);font-family:var(--f-body);font-size:16px}
+.foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;margin-top:16px}
+
+/* dice */
+.diceRow{display:flex;flex-wrap:wrap;gap:18px;align-items:center}
+.die{width:150px;height:150px}
+.die.sm{width:96px;height:96px}
+.moves{display:grid;gap:6px;font-size:18px}
+.moves li{font-weight:700}
+.moves ol{margin:0;padding-left:24px}
+.arrowTxt{font-family:var(--f-display);color:var(--blue)}
+.answers{display:flex;flex-wrap:wrap;gap:8px}
+.ans{display:grid;justify-items:center;gap:2px;padding:8px 10px;border:2px solid var(--line);border-radius:8px;background:var(--sheet);cursor:pointer;font:inherit;color:var(--ink);min-width:62px}
+.ans:hover{border-color:var(--blue)}
+.ans .n{font-family:var(--f-display);font-size:22px;font-weight:800}
+.ans svg{width:34px;height:34px}
+.ans.right{border-color:var(--teacher);background:var(--teachersoft)}
+.ans.wrong{border-color:var(--red);opacity:.6}
+.solrow{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.solrow .step{display:grid;justify-items:center;font-size:14px;color:var(--muted)}
+.question{font-size:19px;font-weight:700}
+
+/* nets */
+.nets{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.net{border:2px solid var(--line);border-radius:8px;background:var(--sheet);padding:10px;cursor:pointer;display:grid;gap:6px;justify-items:center;font:inherit;color:var(--ink)}
+.net svg{width:100%;max-width:160px;height:auto}
+.net.on{border-color:var(--teacher);background:var(--teachersoft)}
+.net .mark{font-family:var(--f-hand);font-size:22px;min-height:26px;line-height:1}
+.net .mark.ok{color:var(--teacher)} .net .mark.no{color:var(--red)}
+.cell{fill:var(--sheet);stroke:var(--ink);stroke-width:2}
+.net.on .cell{fill:var(--selected)}
+.cell.p1{fill:var(--pair1)!important}.cell.p2{fill:var(--pair2)!important}.cell.p3{fill:var(--pair3)!important}
+.cell.clash{fill:var(--clash)!important}
+.cell.star{fill:var(--yellow)!important}
+.cell.pick{fill:var(--teachersoft)!important;stroke:var(--teacher)}
+.cell.miss{fill:var(--clash)!important}
+.startxt{fill:var(--ink);font-family:var(--f-display);font-size:18px;text-anchor:middle;dominant-baseline:central;pointer-events:none}
+.bignet{max-width:330px;width:100%;height:auto;cursor:pointer}
+.small{font-size:14px;color:var(--muted)}
+@media (prefers-reduced-motion:no-preference){.feedback.good{animation:pop .35s ease-out}@keyframes pop{from{transform:scale(.92)}to{transform:none}}}
+</style>
+</head><body>
+
+<div class="wrap" id="app"></div>
+
+<script>
+"use strict";
+/* ---------- helpers ---------- */
+const NS = "http://www.w3.org/2000/svg";
+function h(tag, attrs, ...kids){ const el=document.createElement(tag); for(const k in (attrs||{})){ const v=attrs[k]; if(k==="on") for(const e in v) el.addEventListener(e,v[e]); else if(k==="html") el.innerHTML=v; else if(v!==false&&v!=null) el.setAttribute(k,v);} for(const c of kids.flat()) if(c!=null&&c!==false) el.append(c.nodeType?c:document.createTextNode(c)); return el; }
+function s(tag, attrs, ...kids){ const el=document.createElementNS(NS,tag); for(const k in (attrs||{})) if(attrs[k]!=null) el.setAttribute(k,attrs[k]); for(const c of kids.flat()) if(c) el.append(c.nodeType?c:document.createTextNode(c)); return el; }
+const rnd = n => Math.floor(Math.random()*n);
+const pick = a => a[rnd(a.length)];
+const gcd = (a,b) => b ? gcd(b, a%b) : Math.abs(a);
+const PRAISE = ["Super gemacht!","Bravo, alles richtig!","Toll, genau so!","Stark, richtig gelöst!","Wunderbar!"];
+
+let prog = {};
+try { prog = JSON.parse(localStorage.getItem("raum-muster-v1") || "{}") || {}; } catch(e) { prog = {}; }
+function addSolved(id){ prog[id]=(prog[id]||0)+1; try{ localStorage.setItem("raum-muster-v1", JSON.stringify(prog)); }catch(e){} }
+
+/* plant stages like the self-assessment on the worksheet: seed, sprout, plant, flower */
+function plant(n){
+  const g = s("svg",{viewBox:"0 0 34 34","aria-hidden":"true"});
+  g.append(s("line",{x1:3,y1:30,x2:31,y2:30,class:"soil"}));
+  if(n<=0){ g.append(s("ellipse",{cx:17,cy:27,rx:3.5,ry:2.4})); return g; }
+  const top = n===1?22:n===2?15:12;
+  g.append(s("path",{d:`M17 30 V${top}`}));
+  g.append(s("path",{d:`M17 ${top+4} q-6 -1 -7 -6 q6 0 7 6`}));
+  if(n>=2) g.append(s("path",{d:`M17 ${top+7} q6 -1 7 -6 q-6 0 -7 6`}));
+  if(n>=3){ for(let a=0;a<5;a++){ const r=a*72*Math.PI/180; g.append(s("circle",{cx:17+4.5*Math.sin(r),cy:top-3-4.5*Math.cos(r),r:2.6})); } g.append(s("circle",{cx:17,cy:top-3,r:1.8,class:"fill"})); }
+  return g;
+}
+function stage(id){ const c=prog[id]||0; return c>=3?3:c; }
+
+/* ---------- grid drawing ---------- */
+// split a polyline into unit steps so that one long line and several short ones compare equal
+function units(points){
+  const out=[];
+  for(let i=1;i<points.length;i++){
+    const [x1,y1]=points[i-1],[x2,y2]=points[i];
+    const dx=x2-x1, dy=y2-y1, g=gcd(dx,dy); if(!g) continue;
+    const sx=dx/g, sy=dy/g;
+    for(let k=0;k<g;k++) out.push([x1+k*sx,y1+k*sy,x1+(k+1)*sx,y1+(k+1)*sy]);
+  }
+  return out;
+}
+const dkey = u => u.join(",");
+const ukey = u => { const a=u[0]+","+u[1], b=u[2]+","+u[3]; return a<b?a+"|"+b:b+"|"+a; };
+const parseD = k => k.split(",").map(Number);
+
+function gridBoard(o){
+  const C=30, P=16, W=o.w*C+2*P, H=o.h*C+2*P, px=v=>P+v*C;
+  const svg=s("svg",{viewBox:`0 0 ${W} ${H}`,class:"board",role:"img","aria-label":"Häuschenpapier zum Zeichnen"});
+  svg.style.maxWidth=Math.round(W*1.35)+"px";
+  for(let x=0;x<=o.w;x++) svg.append(s("line",{x1:px(x),y1:px(0),x2:px(x),y2:px(o.h),class:"gl"}));
+  for(let y=0;y<=o.h;y++) svg.append(s("line",{x1:px(0),y1:px(y),x2:px(o.w),y2:px(y),class:"gl"}));
+  if(o.axis!=null) svg.append(s("line",{x1:px(o.axis),y1:px(0)-8,x2:px(o.axis),y2:px(o.h)+8,class:"axis"}));
+  for(const pl of (o.given||[])) svg.append(s("polyline",{points:pl.map(p=>px(p[0])+","+px(p[1])).join(" "),class:"given"}));
+  if(o.arrow){ const [x,y,dx,dy]=o.arrow, ex=px(x)+dx*C*.7, ey=px(y)+dy*C*.7;
+    svg.append(s("circle",{cx:px(x),cy:px(y),r:5,class:"arrow"}));
+    svg.append(s("line",{x1:px(x),y1:px(y),x2:ex,y2:ey,class:"arrow"}));
+    const nx=-dy, ny=dx;
+    svg.append(s("polygon",{points:`${ex+dx*8},${ey+dy*8} ${ex+nx*7},${ey+ny*7} ${ex-nx*7},${ey-ny*7}`,class:"arrow"})); }
+  for(const r of (o.rings||[])) svg.append(s("circle",{cx:px(r[0]),cy:px(r[1]),r:9,class:"ring"}));
+  const over=s("g"), draw=s("g"), pen=s("g");
+  svg.append(over,draw,pen);
+  const B={svg, strokes:o.start?[[o.start]]:[], penUp:!o.start, onChange:null};
+  B.units=()=>B.strokes.flatMap(st=>units(st));
+  B.current=()=>{ if(B.penUp||!B.strokes.length) return null; const st=B.strokes[B.strokes.length-1]; return st[st.length-1]; };
+  B.add=p=>{ const cur=B.current(); if(!cur){ B.strokes.push([p]); B.penUp=false; } else { if(cur[0]===p[0]&&cur[1]===p[1]) return; B.strokes[B.strokes.length-1].push(p); } B.changed(); };
+  B.undo=()=>{ if(!B.strokes.length) return; const st=B.strokes[B.strokes.length-1];
+    if(B.penUp && o.free){ B.penUp=false; } else if(st.length>1) st.pop(); else if(o.free) B.strokes.pop();
+    B.changed(); };
+  B.clear=()=>{ B.strokes=o.start?[[o.start]]:[]; B.penUp=!o.start; B.changed(); };
+  B.lift=()=>{ B.penUp=true; B.render(); };
+  B.changed=()=>{ over.innerHTML=""; B.render(); if(B.onChange) B.onChange(); };
+  B.render=(bad)=>{ draw.innerHTML=""; pen.innerHTML="";
+    B.units().forEach((u,i)=>draw.append(s("line",{x1:px(u[0]),y1:px(u[1]),x2:px(u[2]),y2:px(u[3]),class:bad&&bad(u,i)?"bad":"drawn"})));
+    const c=B.current(); if(c) pen.append(s("circle",{cx:px(c[0]),cy:px(c[1]),r:6,class:"pen"})); };
+  B.overlay=(list,cls)=>{ for(const u of list) over.append(s("line",{x1:px(u[0]),y1:px(u[1]),x2:px(u[2]),y2:px(u[3]),class:cls})); };
+  B.clearOverlay=()=>{ over.innerHTML=""; };
+  svg.addEventListener("click",e=>{ const r=svg.getBoundingClientRect();
+    const x=(e.clientX-r.left)/r.width*W, y=(e.clientY-r.top)/r.height*H;
+    const gx=Math.max(0,Math.min(o.w,Math.round((x-P)/C))), gy=Math.max(0,Math.min(o.h,Math.round((y-P)/C)));
+    B.add([gx,gy]); });
+  B.render();
+  return B;
+}
+
+/* shared runner for all drawing tasks.
+   mode "seq": the path has a fixed start and must follow one of cfg.alts (lists of directed unit keys with move index)
+   mode "set": any order; compare the set of undirected unit steps with cfg.expect */
+function drawTask(area, api, cfg){
+  const B=gridBoard(cfg.board);
+  area.append(h("div",{class:"boardwrap"},B.svg));
+  const check = () => {
+    const U=B.units();
+    if(cfg.mode==="seq"){
+      const d=U.map(dkey); let best=null;
+      for(const alt of cfg.alts){ let i=0; while(i<d.length&&i<alt.keys.length&&d[i]===alt.keys[i]) i++; if(!best||i>best.i) best={i,alt}; }
+      if(best.i===d.length && d.length===best.alt.keys.length) return {done:true,U};
+      if(best.i===d.length) return {partial:true,U,next:best.alt,at:best.i};
+      return {wrong:true,U,from:best.i,over:best.i===best.alt.keys.length,alt:best.alt};
+    } else {
+      const E=cfg.expect; const bad=U.filter(u=>!E.has(ukey(u))); const have=new Set(U.map(ukey).filter(k=>E.has(k)));
+      if(!bad.length && have.size===E.size) return {done:true,U};
+      if(!bad.length) return {partial:true,U,have};
+      return {wrong:true,U,have};
+    }
+  };
+  const isBad = r => cfg.mode==="seq" ? (u,i)=>i>=r.from : (u)=>!cfg.expect.has(ukey(u));
+  B.onChange=()=>{ const r=check(); if(r.done){ B.render(); api.solved(); } else api.say(cfg.idle||"",'info'); };
+  const btns=h("div",{class:"btns"});
+  btns.append(h("button",{class:"b go",on:{click:()=>{ const r=check();
+    if(r.done){ api.solved(); return; }
+    if(!r.U.length){ api.say("Tippe zuerst auf einen Kreuzungspunkt, um eine Linie zu zeichnen.","bad"); return; }
+    if(r.wrong){ B.render(isBad(r));
+      api.say(cfg.mode==="seq" && r.over ? "Das Muster ist schon fertig. Die roten Linien sind zu viel." :
+        cfg.mode==="seq" ? "Die rote Linie stimmt noch nicht. Mach sie mit «Rückgängig» weg und schau nochmals genau." :
+        "Die roten Linien liegen nicht am richtigen Ort. Zähle die Häuschen bis zur Achse!", "bad"); return; }
+    api.say(cfg.partialMsg||"Bis hierhin stimmt alles! Zeichne weiter.","info"); }}},"Prüfen"));
+  btns.append(h("button",{class:"b",on:{click:()=>B.undo()}},"Rückgängig"));
+  if(cfg.board.free) btns.append(h("button",{class:"b",on:{click:()=>{B.lift(); api.say("Stift abgesetzt. Tippe auf einen neuen Startpunkt.","info");}}},"Stift absetzen"));
+  btns.append(h("button",{class:"b",on:{click:()=>B.clear()}},"Alles löschen"));
+  btns.append(h("button",{class:"b soft",on:{click:()=>{ api.helped(); const r=check(); B.clearOverlay();
+    if(r.done) return;
+    if(r.wrong && cfg.mode==="seq"){ B.render(isBad(r)); api.say("Mach zuerst die roten Linien weg. Sie stimmen nicht.","info"); return; }
+    if(cfg.mode==="seq"){ const alt=r.next, mi=alt.move[r.at]; const list=[];
+      for(let i=r.at;i<alt.keys.length&&alt.move[i]===mi;i++) list.push(parseD(alt.keys[i]));
+      B.overlay(list,"hint"); api.say(cfg.hintText?cfg.hintText(mi):"Die orange Linie zeigt dir den nächsten Strich.","info");
+    } else { const miss=[...cfg.expect].filter(k=>!r.have.has(k)); if(r.wrong) B.render(isBad(r));
+      const k=miss[0]; if(k){ const [a,b]=k.split("|"); B.overlay([[...a.split(",").map(Number),...b.split(",").map(Number)]],"hint"); }
+      api.say(r.wrong?"Rot ist falsch. Orange ist ein Strich, der noch fehlt.":"Orange ist ein Strich, der noch fehlt.","info"); }
+  }}},"Tipp"));
+  btns.append(h("button",{class:"b soft",on:{click:()=>{ api.helped(); B.clearOverlay();
+    const list = cfg.mode==="seq" ? cfg.alts[0].keys.map(parseD) : [...cfg.expect].map(k=>{const [a,b]=k.split("|"); return [...a.split(",").map(Number),...b.split(",").map(Number)];});
+    B.overlay(list,"sol"); api.say(cfg.solText||"Die grüne gestrichelte Linie zeigt die Lösung. Zeichne sie nach!","info"); }}},"Lösung zeigen"));
+  area.append(btns);
+  return B;
+}
+
+/* ---------- 1–3: continue a pattern ---------- */
+const RECT = [
+  [[0,-3],[2,0],[0,2],[1,0],[0,1],[1,0]],
+  [[0,-2],[1,0],[0,-1],[2,0],[0,3],[1,0]],
+  [[0,-3],[3,0],[0,1],[-1,0],[0,2],[2,0]],
+  [[0,-1],[1,0],[0,-2],[2,0],[0,2],[1,0],[0,1],[1,0]],
+];
+const DIAG = [
+  [[2,-3],[2,2],[-1,1],[2,0]],
+  [[1,-2],[1,2],[1,0]],
+  [[2,-2],[0,1],[1,1],[1,0]],
+  [[1,-2],[2,0],[1,2],[-1,0],[1,-1],[1,1]],
+];
+function randPattern(){
+  for(let tries=0;tries<500;tries++){
+    const m=[]; let y=0, lastV=false; const n=2+rnd(3);
+    for(let i=0;i<n;i++){
+      const opts=[[1+rnd(2),0],[1,-1],[1,1],[1,-2],[2,-1],[1,2],[2,1]];
+      if(!lastV) opts.push([0,-(1+rnd(3))],[0,1+rnd(2)],[0,-(1+rnd(2))]);
+      const mv=pick(opts); m.push(mv); lastV=mv[0]===0; y+=mv[1];
+    }
+    if(y!==0){ if(lastV) m.push([1,0]); m.push([0,-y]); }
+    m.push([1,0]);
+    let cy=0,mn=0,mx=0,wid=0; for(const [dx,dy] of m){ cy+=dy; mn=Math.min(mn,cy); mx=Math.max(mx,cy); wid+=dx; }
+    if(wid>=3 && wid<=5 && mx-mn<=4 && mx-mn>=2) return m;
+  }
+  return RECT[0];
+}
+function patternTask(moves){
+  return (area, api) => {
+    let pts=[[0,0]], x=0, y=0;
+    for(let p=0;p<4;p++) for(const [dx,dy] of moves){ x+=dx; y+=dy; pts.push([x,y]); }
+    const xs=pts.map(p=>p[0]), ys=pts.map(p=>p[1]);
+    const ox=1-Math.min(...xs), oy=1-Math.min(...ys);
+    pts=pts.map(([a,b])=>[a+ox,b+oy]);
+    const g=2*moves.length, given=pts.slice(0,g+1), rest=pts.slice(g);
+    const keys=[], move=[];
+    for(let i=1;i<rest.length;i++) for(const u of units([rest[i-1],rest[i]])){ keys.push(dkey(u)); move.push(i); }
+    drawTask(area, api, {mode:"seq", alts:[{keys,move}],
+      board:{w:Math.max(...xs)+ox+1, h:Math.max(...ys)-Math.min(...ys)+2, given:[given], start:given[given.length-1]},
+      partialMsg:"Bis hierhin stimmt alles! Zeichne weiter, bis das Muster noch 2 Mal dasteht.",
+      hintText:()=>"Die orange Linie zeigt dir den nächsten Strich. Schau, welcher Strich im blauen Muster an dieser Stelle kommt."});
+  };
+}
+
+/* ---------- 4–6: draw from a number sequence ---------- */
+const DIRS=[[1,0],[0,1],[-1,0],[0,-1]];
+const DIRNAME=["nach rechts","nach unten","nach links","nach oben"];
+function spiralPts(seq, d0, turn){
+  let x=0,y=0,d=d0; const pts=[[0,0]], mv=[];
+  for(let c=0;c<4;c++){ for(const n of seq){ x+=DIRS[d][0]*n; y+=DIRS[d][1]*n; pts.push([x,y]); d=(d+turn+4)%4; }
+    if(x===0&&y===0&&d===d0) break; }
+  return pts;
+}
+function spiralFits(seq,d0){ const all=[...spiralPts(seq,d0,1),...spiralPts(seq,d0,-1)]; const xs=all.map(p=>p[0]),ys=all.map(p=>p[1]);
+  const last=spiralPts(seq,d0,1).pop(); return {ok:last[0]===0&&last[1]===0, w:Math.max(...xs)-Math.min(...xs), h:Math.max(...ys)-Math.min(...ys), xs, ys}; }
+function randSeq(){
+  for(;;){ const len=pick([3,3,5,2]); const seq=Array.from({length:len},()=>1+rnd(4));
+    if(new Set(seq).size===1) continue;
+    const d0=rnd(4), f=spiralFits(seq,d0); if(f.ok && f.w<=13 && f.h<=13 && f.w>=3) return {seq,d0}; }
+}
+function seqTask(fixed){
+  return (area, api, v) => {
+    const {seq,d0} = fixed || randSeq();
+    area.append(h("div",{class:"seq"},h("span",{},"Zahlenfolge:"),seq.map(n=>h("span",{class:"chip"},String(n)))));
+    const f=spiralFits(seq,d0), ox=1-Math.min(...f.xs), oy=1-Math.min(...f.ys);
+    const alts=[1,-1].map(t=>{ const pts=spiralPts(seq,d0,t).map(([a,b])=>[a+ox,b+oy]); const keys=[],move=[];
+      for(let i=1;i<pts.length;i++) for(const u of units([pts[i-1],pts[i]])){ keys.push(dkey(u)); move.push(i-1); }
+      return {keys,move}; });
+    drawTask(area, api, {mode:"seq", alts,
+      board:{w:f.w+2,h:f.h+2,start:[ox,oy],arrow:[ox,oy,DIRS[d0][0],DIRS[d0][1]]},
+      partialMsg:"Bis hierhin stimmt alles! Zeichne weiter, bis du wieder beim roten Pfeil bist.",
+      hintText: mi => `Jetzt kommt die Zahl ${seq[mi%seq.length]}: so viele Häuschen. Die orange Linie zeigt, wohin.`,
+      solText:"Die grüne Linie zeigt die Lösung, wenn man immer nach rechts dreht. Immer nach links drehen ist auch richtig."});
+  };
+}
+
+/* ---------- 7: mirror ---------- */
+const SHAPES = [
+  {name:"Haus", p:[[[0,5],[0,2],[2,0],[4,2],[4,5],[0,5]]]},
+  {name:"Fahne", p:[[[0,6],[0,0],[3,1],[0,2]]]},
+  {name:"Pfeil", p:[[[0,2],[2,2],[2,0],[5,3],[2,6],[2,4],[0,4],[0,2]]]},
+  {name:"Treppe", p:[[[0,4],[0,3],[1,3],[1,2],[2,2],[2,1],[3,1],[3,4],[0,4]]]},
+  {name:"Boot", p:[[[0,3],[5,3],[4,5],[1,5],[0,3]],[[2,3],[2,0],[4,2],[2,2]]]},
+  {name:"Blitz", p:[[[1,0],[3,0],[2,2],[4,2],[1,6],[2,3],[0,3],[1,0]]]},
+  {name:"Tanne", p:[[[2,0],[4,3],[3,3],[3,5],[1,5],[1,3],[0,3],[2,0]]]},
+  {name:"Schlüssel", p:[[[0,1],[2,1],[2,0],[5,0],[5,2],[4,2],[4,1],[3,1],[3,3],[0,3],[0,1]]]},
+];
+function mirrorTask(area, api, v){
+  const sh=SHAPES[v%SHAPES.length], flip=rnd(2)===1;
+  let all=sh.p.flat(); const sw=Math.max(...all.map(p=>p[0])), shh=Math.max(...all.map(p=>p[1]));
+  let polys=sh.p.map(pl=>pl.map(([x,y])=>[flip?sw-x:x,y]));
+  const gap=rnd(2), A=sw+gap+1, ox=A-gap-sw;
+  polys=polys.map(pl=>pl.map(([x,y])=>[x+ox,y+1]));
+  const expect=new Set(polys.flatMap(pl=>units(pl.map(([x,y])=>[2*A-x,y]))).map(ukey));
+  const first=polys[0][0];
+  drawTask(area, api, {mode:"set", expect,
+    board:{w:2*A,h:shh+2,axis:A,given:polys,free:true,rings:[[2*A-first[0],first[1]]]},
+    partialMsg:"Alles, was du gezeichnet hast, stimmt! Es fehlen noch Linien."});
+}
+
+/* ---------- dice ---------- */
+const TILT = {
+  back:    st=>({front:7-st.top, top:st.front, right:st.right}),
+  forward: st=>({front:st.top, top:7-st.front, right:st.right}),
+  right:   st=>({front:st.front, top:7-st.right, right:st.top}),
+  left:    st=>({front:st.front, top:st.right, right:7-st.top}),
+};
+const TNAME = {back:"nach hinten", forward:"nach vorne", right:"nach rechts", left:"nach links"};
+const TARROW = {back:"↑", forward:"↓", right:"→", left:"←"};
+const INV = {back:"forward", forward:"back", right:"left", left:"right"};
+const FNAME = {front:"vorne", top:"oben", right:"rechts"};
+const YAW = st=>({top:st.top, front:st.right, right:7-st.front});
+function randomDie(){ let st={top:1,front:2,right:3};
+  for(let i=0;i<8;i++) st = rnd(3)===0 ? YAW(st) : TILT[pick(Object.keys(TILT))](st); return st; }
+const PIPS = {1:[[.5,.5]],2:[[.27,.27],[.73,.73]],3:[[.27,.27],[.5,.5],[.73,.73]],4:[[.27,.27],[.73,.27],[.27,.73],[.73,.73]],
+  5:[[.27,.27],[.73,.27],[.5,.5],[.27,.73],[.73,.73]],6:[[.27,.25],[.73,.25],[.27,.5],[.73,.5],[.27,.75],[.73,.75]]};
+function face(n, m, fill){ const g=s("g",{transform:`matrix(${m.join(" ")})`});
+  g.append(s("rect",{x:0,y:0,width:1,height:1,rx:.1,fill,stroke:"#7a1612","stroke-width":1.2,"vector-effect":"non-scaling-stroke"}));
+  for(const [u,v] of PIPS[n]) g.append(s("circle",{cx:u,cy:v,r:.095,fill:"#fff"})); return g; }
+function dieSVG(st, small){
+  const x0=8,y0=32,S=60,D=26;
+  const g=s("svg",{viewBox:"0 0 100 100",class:"die"+(small?" sm":""),role:"img","aria-label":`Würfel: vorne ${st.front}, oben ${st.top}, rechts ${st.right}`});
+  g.append(face(st.top,[S,0,-D,D,x0+D,y0-D],"var(--die-top)"));
+  g.append(face(st.right,[D,-D,0,S,x0+S,y0],"var(--die-side)"));
+  g.append(face(st.front,[S,0,0,S,x0,y0],"var(--die-front)"));
+  return g; }
+function flatFace(n){ const g=s("svg",{viewBox:"0 0 1 1","aria-hidden":"true"}); g.append(face(n,[1,0,0,1,0,0],"var(--die-front)")); return g; }
+
+function diceTask(nMoves, asks){
+  return (area, api) => {
+    const start=randomDie(), moves=[];
+    while(moves.length<nMoves){ const m=pick(Object.keys(TILT)); if(moves.length && INV[moves[moves.length-1]]===m) continue; moves.push(m); }
+    const states=[start]; for(const m of moves) states.push(TILT[m](states[states.length-1]));
+    const end=states[states.length-1], ask=pick(asks), answer=end[ask];
+    area.append(h("div",{class:"diceRow"}, dieSVG(start),
+      h("div",{class:"moves"}, h("b",{},nMoves===1?"Du kippst den Würfel einmal:":`Du kippst den Würfel ${nMoves} Mal, nacheinander:`),
+        h("ol",{}, moves.map(m=>h("li",{},TNAME[m]+" ",h("span",{class:"arrowTxt"},TARROW[m])))))));
+    area.append(h("p",{class:"question"},`Welche Augenzahl ist danach ${FNAME[ask]}?`));
+    const ans=h("div",{class:"answers"});
+    for(let n=1;n<=6;n++){ const b=h("button",{class:"ans","aria-label":String(n),on:{click:()=>{
+      if(n===answer){ b.classList.add("right"); api.solved(); } else { b.classList.add("wrong"); api.say("Noch nicht. Versuch es nochmals! Ein echter Würfel hilft.","bad"); } }}}, flatFace(n), h("span",{class:"n"},String(n)));
+      ans.append(b); }
+    area.append(ans);
+    const sol=h("div",{class:"solrow",hidden:true});
+    states.forEach((st,i)=>{ if(i) sol.append(h("div",{class:"step"},h("span",{class:"arrowTxt"},TARROW[moves[i-1]]),TNAME[moves[i-1]]));
+      sol.append(dieSVG(st,true)); });
+    area.append(h("div",{class:"btns"},
+      h("button",{class:"b soft",on:{click:()=>{ api.helped(); api.say("Tipp: Gegenüberliegende Seiten ergeben zusammen immer 7. Unten liegt also 7 minus oben, hinten 7 minus vorne, links 7 minus rechts. Kippst du nach hinten, kommt die Seite von unten nach vorne.","info"); }}},"Tipp"),
+      h("button",{class:"b soft",on:{click:()=>{ api.helped(); sol.hidden=false; api.say(`So dreht sich der Würfel. Am Schluss ist ${FNAME[ask]} die ${answer}.`,"info"); }}},"Lösung zeigen")));
+    area.append(sol);
+  };
+}
+function whichTiltTask(area, api){
+  const a=randomDie(), m=pick(Object.keys(TILT)), b=TILT[m](a);
+  area.append(h("div",{class:"diceRow"}, h("div",{class:"step"},h("b",{},"Vorher"),dieSVG(a)), h("span",{class:"arrowTxt",style:"font-size:30px"},"⇒"), h("div",{class:"step"},h("b",{},"Nachher"),dieSVG(b))));
+  area.append(h("p",{class:"question"},"In welche Richtung wurde der Würfel gekippt?"));
+  const ans=h("div",{class:"answers"});
+  for(const k of ["back","forward","left","right"]){ const btn=h("button",{class:"ans",on:{click:()=>{
+    if(k===m){ btn.classList.add("right"); api.solved(); } else { btn.classList.add("wrong"); api.say("Noch nicht. Schau, wohin die Zahl von oben gewandert ist.","bad"); } }}},
+    h("span",{class:"n"},TARROW[k]), h("span",{},TNAME[k])); ans.append(btn); }
+  area.append(ans);
+  area.append(h("div",{class:"btns"},h("button",{class:"b soft",on:{click:()=>{ api.helped();
+    api.say(`Tipp: Oben war die ${a.top}. Wo ist die ${a.top} jetzt? Ist sie vorne, hast du nach vorne gekippt. Ist sie rechts, nach rechts. Ist sie gar nicht mehr zu sehen, liegt sie hinten oder links.`,"info"); }}},"Tipp")));
+}
+
+/* ---------- cube nets ---------- */
+const D4=[[-1,0,"back"],[1,0,"forward"],[0,1,"right"],[0,-1,"left"]];
+const ck=(r,c)=>r+","+c;
+function normalize(cells){ const mr=Math.min(...cells.map(c=>c[0])), mc=Math.min(...cells.map(c=>c[1]));
+  return cells.map(([r,c])=>[r-mr,c-mc]).sort((a,b)=>a[0]-b[0]||a[1]-b[1]); }
+function canon(cells){ let best=null; let cur=cells;
+  for(let f=0;f<2;f++){ for(let r=0;r<4;r++){ cur=cur.map(([a,b])=>[b,-a]); const k=normalize(cur).map(c=>c.join(",")).join(";"); if(!best||k<best) best=k; } cur=cur.map(([a,b])=>[a,-b]); }
+  return best; }
+function randomOrient(cells){ let cur=cells; for(let i=rnd(4);i>0;i--) cur=cur.map(([a,b])=>[b,-a]); if(rnd(2)) cur=cur.map(([a,b])=>[a,-b]); return normalize(cur); }
+function foldNet(cells){
+  const set=new Set(cells.map(c=>ck(...c)));
+  for(const [r,c] of cells) if(set.has(ck(r,c+1))&&set.has(ck(r+1,c))&&set.has(ck(r+1,c+1)))
+    return {valid:false, clash:new Set([ck(r,c),ck(r,c+1),ck(r+1,c),ck(r+1,c+1)]), block:true};
+  const st={}, q=[cells[0]]; st[ck(...cells[0])]={top:1,front:2,right:3};
+  while(q.length){ const [r,c]=q.shift(); for(const [dr,dc,t] of D4){ const k=ck(r+dr,c+dc); if(set.has(k)&&!st[k]){ st[k]=TILT[t](st[ck(r,c)]); q.push([r+dr,c+dc]); } } }
+  const bottom={}, count={}; for(const k in st){ bottom[k]=7-st[k].top; count[bottom[k]]=(count[bottom[k]]||0)+1; }
+  const clash=new Set(Object.keys(bottom).filter(k=>count[bottom[k]]>1));
+  return {valid:clash.size===0, clash, bottom};
+}
+function randHex(){ const cells=[[0,0]], set=new Set(["0,0"]);
+  while(cells.length<6){ const [r,c]=pick(cells), [dr,dc]=pick(D4), k=ck(r+dr,c+dc); if(!set.has(k)){ set.add(k); cells.push([r+dr,c+dc]); } }
+  return normalize(cells); }
+function randNet(wantValid, seen){ for(let i=0;i<20000;i++){ const n=randHex(), k=canon(n); if(seen.has(k)) continue; if(foldNet(n).valid===wantValid){ seen.add(k); return randomOrient(n); } } return null; }
+const pairClass = b => "p"+Math.min(b,7-b);
+function netSVG(cells, cls, big){
+  const Z=big?52:24, w=Math.max(...cells.map(c=>c[1]))+1, hh=Math.max(...cells.map(c=>c[0]))+1;
+  const g=s("svg",{viewBox:`-3 -3 ${w*Z+6} ${hh*Z+6}`,class:big?"bignet":"",role:"img","aria-label":"Würfelnetz"});
+  const rects={};
+  for(const [r,c] of cells){ const k=ck(r,c); const rc=s("rect",{x:c*Z,y:r*Z,width:Z,height:Z,class:"cell "+(cls?cls(k):"")}); rc.dataset.k=k; rects[k]=rc; g.append(rc); }
+  return {svg:g, rects, Z};
+}
+function netsTask(area, api){
+  const seen=new Set(), nValid=2+rnd(3), list=[];
+  for(let i=0;i<6;i++) list.push(randNet(i<nValid, seen));
+  list.sort(()=>Math.random()-.5);
+  const grid=h("div",{class:"nets"}), cards=[];
+  list.forEach((cells,i)=>{ const {svg,rects}=netSVG(cells); const mark=h("span",{class:"mark"},"");
+    const card=h("button",{class:"net","aria-pressed":"false",on:{click:()=>{ card.classList.toggle("on"); card.setAttribute("aria-pressed",card.classList.contains("on")); }}}, svg, mark);
+    cards.push({card,cells,rects,mark,res:foldNet(cells)}); grid.append(card); });
+  area.append(grid);
+  const explain=()=>{ for(const c of cards){ for(const k in c.rects){ const r=c.rects[k]; r.classList.remove("p1","p2","p3","clash");
+      if(c.res.valid) r.classList.add(pairClass(c.res.bottom[k])); else if(c.res.clash.has(k)) r.classList.add("clash"); } } };
+  area.append(h("div",{class:"btns"},
+    h("button",{class:"b go",on:{click:()=>{ let wrong=0;
+      for(const c of cards){ const on=c.card.classList.contains("on"); const ok=on===c.res.valid; if(!ok) wrong++;
+        c.mark.textContent = ok ? (on?"✓ richtig":"✓ geht nicht") : (on?"✗ geht nicht":"✗ das geht!"); c.mark.className="mark "+(ok?"ok":"no"); }
+      explain();
+      if(!wrong) api.solved(); else api.say(`${wrong} ${wrong===1?"Netz ist":"Netze sind"} noch falsch. Gleiche Farben liegen beim Würfel gegenüber. Rote Felder würden aufeinander liegen.`,"bad"); }}},"Prüfen"),
+    h("button",{class:"b soft",on:{click:()=>{ api.helped(); api.say("Tipp: Ein Würfelnetz hat nie 4 Felder im Quadrat und nie mehr als 4 Felder in einer Reihe. Stell dir vor, du klappst die Felder um ein Mittelfeld hoch: Nichts darf doppelt liegen.","info"); }}},"Tipp"),
+    h("button",{class:"b soft",on:{click:()=>{ api.helped(); explain(); for(const c of cards){ c.mark.textContent=c.res.valid?"geht":"geht nicht"; c.mark.className="mark "+(c.res.valid?"ok":"no"); }
+      api.say("Bei den Netzen, die gehen, liegen gleiche Farben gegenüber. Rote Felder würden beim Falten aufeinander liegen.","info"); }}},"Lösung zeigen")));
+}
+function oppositeTask(area, api){
+  const cells=randNet(true,new Set()), res=foldNet(cells), keys=Object.keys(res.bottom);
+  const star=pick(keys), target=keys.find(k=>res.bottom[k]===7-res.bottom[star]);
+  const {svg,rects,Z}=netSVG(cells, k=>k===star?"star":"", true);
+  const [sr,sc]=star.split(",").map(Number);
+  svg.append(s("text",{x:sc*Z+Z/2,y:sr*Z+Z/2,class:"startxt"},"★"));
+  let done=false;
+  svg.addEventListener("click",e=>{ const k=e.target.dataset&&e.target.dataset.k; if(!k||done) return;
+    if(k===star){ api.say("Das ist der Stern selbst. Welches Feld liegt ihm gegenüber?","info"); return; }
+    if(k===target){ done=true; rects[k].classList.add("pick"); api.solved(); }
+    else { rects[k].classList.add("miss"); api.say("Das Feld berührt den Stern, wenn du faltest. Such weiter!","bad"); } });
+  area.append(h("div",{},svg));
+  area.append(h("div",{class:"btns"},
+    h("button",{class:"b soft",on:{click:()=>{ api.helped(); api.say("Tipp: Ein Feld, das den Stern berührt (auch nach dem Falten), liegt nie gegenüber. Bei einer Reihe von drei Feldern liegen das erste und das dritte gegenüber.","info"); }}},"Tipp"),
+    h("button",{class:"b soft",on:{click:()=>{ api.helped(); for(const k in rects){ rects[k].classList.remove("miss","star"); rects[k].classList.add(pairClass(res.bottom[k])); }
+      api.say("Gleiche Farben liegen gegenüber, wenn du den Würfel faltest.","info"); }}},"Lösung zeigen")));
+}
+
+/* ---------- list of exercises ---------- */
+const GROUPS = {
+  muster:{t:"Muster weiterzeichnen", d:"Schau genau, welches Stück sich wiederholt, und zeichne es Strich für Strich weiter."},
+  folge:{t:"Muster aus Zahlenfolgen", d:"Zahlen sagen dir, wie lang jede Linie ist. Nach jeder Linie drehst du dich eine Vierteldrehung."},
+  spiegel:{t:"Spiegeln", d:"Zeichne die Figur so, wie sie in einem Spiegel an der roten Linie aussehen würde."},
+  wuerfel:{t:"Würfel kippen", d:"Stell dir vor, wie der Würfel rollt. Am besten hältst du einen echten Würfel in der Hand."},
+  netz:{t:"Würfelnetze", d:"Aus welchen Papierformen kann man einen Würfel falten?"},
+};
+const HOW_DRAW = ["Tippe nacheinander auf die Kreuzungspunkte der Häuschen. Zwischen zwei Punkten entsteht eine Linie.","Dein Stift (der orange Punkt) beginnt am Ende der blauen Linie.","Falsch getippt? «Rückgängig» nimmt den letzten Strich weg."];
+const HOW_SEQ = ["Starte beim roten Pfeil und zeichne in Pfeilrichtung so viele Häuschen lang, wie die erste Zahl sagt.","Dann drehst du dich eine Vierteldrehung und zeichnest die nächste Zahl. Drehe immer in die gleiche Richtung!","Ist die Zahlenfolge zu Ende, beginnst du wieder von vorne.","Fertig bist du, wenn du wieder beim Pfeil ankommst."];
+const EXS = [
+  {id:"tuerme", g:"muster", lv:"grund", t:"Türme und Treppen", d:"Muster mit geraden Linien", how:HOW_DRAW, lead:"Zeichne das blaue Muster noch 2 Mal weiter. Arbeite genau!", make:(a,api,v)=>patternTask(RECT[v%RECT.length])(a,api)},
+  {id:"zacken", g:"muster", lv:"grund", t:"Zacken und Spitzen", d:"Muster mit schrägen Linien", how:[...HOW_DRAW,"Schräge Linien gehen von Kreuzungspunkt zu Kreuzungspunkt. Zähle, wie viele Häuschen nach rechts und nach oben."], lead:"Zeichne das blaue Muster noch 2 Mal weiter. Zähle die Häuschen bei den schrägen Linien!", make:(a,api,v)=>patternTask(DIAG[v%DIAG.length])(a,api)},
+  {id:"ueberraschung", g:"muster", lv:"grund", t:"Überraschungsmuster", d:"Jedes Mal ein neues Muster", how:HOW_DRAW, lead:"Zeichne das blaue Muster noch 2 Mal weiter.", make:(a,api)=>patternTask(randPattern())(a,api)},
+  {id:"folge123", g:"folge", lv:"erw", t:"Zahlenfolge 1, 2, 3", d:"Wie auf dem Arbeitsblatt", how:HOW_SEQ, lead:"Zeichne mit der Zahlenfolge das Muster.", make:seqTask({seq:[1,2,3],d0:1})},
+  {id:"folge42223", g:"folge", lv:"erw", t:"Zahlenfolge 4, 2, 2, 2, 3", d:"Wie auf dem Arbeitsblatt", how:HOW_SEQ, lead:"Zeichne mit der Zahlenfolge das Muster.", make:seqTask({seq:[4,2,2,2,3],d0:0})},
+  {id:"folge-neu", g:"folge", lv:"erw", t:"Neue Zahlenfolgen", d:"Jedes Mal eine andere Folge", how:HOW_SEQ, lead:"Zeichne mit der Zahlenfolge das Muster.", make:seqTask(null)},
+  {id:"spiegeln", g:"spiegel", lv:"grund", t:"Figuren spiegeln", d:"Häuser, Boote, Pfeile und mehr", how:["Jeder Punkt hat auf der anderen Seite der roten Linie einen Partner, genau gleich weit weg.","Zähle die Häuschen bis zur roten Linie und gleich viele auf der anderen Seite.","Beim orangen Kreis kannst du anfangen. Mit «Stift absetzen» beginnst du eine neue Linie woanders."], lead:"Spiegle die blaue Figur an der roten Linie.", make:mirrorTask},
+  {id:"kippen1", g:"wuerfel", lv:"grund", t:"Würfel einmal kippen", d:"Ein Schritt", how:["Hinten ist vom Kind weg, vorne ist zum Kind hin.","Gegenüberliegende Seiten eines Würfels ergeben zusammen immer 7 (1 und 6, 2 und 5, 3 und 4)."], lead:"Der Würfel liegt so vor dir wie im Bild.", make:diceTask(1,["front","top"])},
+  {id:"kippen2", g:"wuerfel", lv:"erw", t:"Würfel zweimal kippen", d:"Wie Martas Würfel", how:["Kippe in Gedanken einen Schritt nach dem anderen.","Gegenüberliegende Seiten ergeben zusammen immer 7."], lead:"Der Würfel liegt so vor dir wie im Bild.", make:diceTask(2,["front"])},
+  {id:"kippen3", g:"wuerfel", lv:"erw", t:"Würfel dreimal kippen", d:"Für Profis", how:["Kippe in Gedanken einen Schritt nach dem anderen. Merke dir nach jedem Schritt, was oben und vorne ist.","Gegenüberliegende Seiten ergeben zusammen immer 7."], lead:"Der Würfel liegt so vor dir wie im Bild.", make:diceTask(3,["front","top","right"])},
+  {id:"richtung", g:"wuerfel", lv:"erw", t:"Wohin wurde gekippt?", d:"Vorher und nachher vergleichen", how:["Vergleiche die beiden Bilder. Wohin ist die Zahl gewandert, die vorher oben war?"], lead:"Der Würfel wurde genau einmal gekippt.", make:whichTiltTask},
+  {id:"netze", g:"netz", lv:"erw", t:"Würfelnetze erkennen", d:"Welche lassen sich falten?", how:["Tippe auf alle Netze, aus denen man einen Würfel falten kann. Sie werden grün.","Dann drückst du «Prüfen»."], lead:"Markiere die richtigen Vorlagen grün.", make:netsTask},
+  {id:"gegenueber", g:"netz", lv:"erw", t:"Was liegt gegenüber?", d:"Den Würfel im Kopf falten", how:["Stell dir vor, du faltest das Netz zu einem Würfel.","Tippe auf das Feld, das dann dem Stern gegenüber liegt."], lead:"Welches Feld liegt dem Stern gegenüber?", make:oppositeTask},
+];
+
+/* ---------- pages ---------- */
+const app=document.getElementById("app");
+function home(){
+  app.innerHTML="";
+  const solved=EXS.filter(e=>prog[e.id]).length;
+  app.append(h("header",{class:"intro"},
+    h("h1",{},"Raum & Muster"),
+    h("p",{},"Übungen zu Mustern, Spiegeln, Würfeln und Würfelnetzen, wie im Mathe-Test der 3. Klasse. Jede Übung kannst du immer wieder neu starten."),
+    h("p",{class:"total"}, solved ? `${solved} von ${EXS.length} Übungen schon gelöst!` : `${EXS.length} Übungen warten auf dich.`),
+    h("div",{class:"legend"}, h("span",{},h("i",{style:"background:var(--yellow)"}),"Grundanforderungen"), h("span",{},h("i",{style:"background:var(--green)"}),"erweiterte Anforderungen"),
+      h("span",{},plant(0),plant(1),plant(2),plant(3)," wächst mit jeder Lösung ohne Hilfe"))));
+  for(const gk in GROUPS){ const gr=GROUPS[gk];
+    const cards=h("div",{class:"cards"});
+    EXS.forEach((e,i)=>{ if(e.g!==gk) return;
+      cards.append(h("button",{class:"card",on:{click:()=>go(i)}}, h("span",{class:"bar"+(e.lv==="grund"?" grund":"")}),
+        h("span",{class:"txt"},h("span",{class:"num"},"Übung "+(i+1)),h("span",{class:"ttl"},e.t),h("span",{class:"dsc"},e.d)),
+        h("span",{class:"plant"},plant(stage(e.id))))); });
+    app.append(h("section",{class:"group"},h("h2",{},gr.t),h("p",{},gr.d),cards)); }
+  app.append(h("p",{class:"small",style:"margin-top:28px"},"Tipp für Eltern: Würfel und Netze gehen leichter mit echtem Material. Einen Würfel in die Hand nehmen oder ein Netz aus Häuschenpapier ausschneiden und falten hilft beim Vorstellen."));
+}
+function exercise(i){
+  const ex=EXS[i]; let variant=0, helped=false, solvedNow=false;
+  app.innerHTML="";
+  const fb=h("p",{class:"feedback","aria-live":"polite"});
+  const area=h("div",{class:"task"});
+  const api={
+    say(msg,kind){ fb.textContent=msg; fb.className="feedback "+(kind||""); },
+    helped(){ helped=true; },
+    solved(){ if(!solvedNow){ solvedNow=true; if(!helped) addSolved(ex.id); }
+      api.say(pick(PRAISE)+(helped?" Jetzt noch eine neue Aufgabe ohne Hilfe?":""),"good"); }
+  };
+  const load=()=>{ area.innerHTML=""; helped=false; solvedNow=false; api.say("",""); ex.make(area,api,variant); };
+  app.append(h("button",{class:"back",on:{click:()=>go(-1)}},"← Alle Übungen"));
+  app.append(h("article",{class:"sheet"}, h("span",{class:"bar"+(ex.lv==="grund"?" grund":"")}),
+    h("div",{class:"inner"},
+      h("div",{class:"head"}, h("span",{class:"level"},ex.lv==="grund"?"Grundanforderungen":"erweiterte Anforderungen"),
+        h("span",{class:"num"},"Übung "+(i+1)+" · "+GROUPS[ex.g].t), h("h2",{},ex.t)),
+      h("p",{class:"question"},ex.lead),
+      h("div",{class:"howto"},h("b",{},"So geht's"),h("ul",{},ex.how.map(t=>h("li",{},t)))),
+      area, fb)));
+  app.append(h("div",{class:"foot"},
+    h("button",{class:"b",on:{click:()=>{ variant++; load(); }}},"Neue Aufgabe"),
+    i<EXS.length-1 ? h("button",{class:"b go",on:{click:()=>go(i+1)}},"Nächste Übung →") : h("button",{class:"b go",on:{click:()=>go(-1)}},"Zur Übersicht")));
+  load();
+}
+function go(i){ const tok = i<0 ? "" : EXS[i].id; try{ if(location.hash.slice(1)!==tok) history.replaceState(null,"",tok?"#"+tok:location.pathname+location.search); }catch(e){} render(i); window.scrollTo(0,0); }
+function render(i){ if(i<0) home(); else exercise(i); }
+const start=EXS.findIndex(e=>e.id===location.hash.slice(1));
+render(start);
+window.addEventListener("hashchange",()=>render(EXS.findIndex(e=>e.id===location.hash.slice(1))));
+</script>
+</body></html>
