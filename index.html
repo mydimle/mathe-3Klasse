@@ -557,7 +557,8 @@ function home(){
         h("span",{class:"txt"},h("span",{class:"num"},"Übung "+(i+1)),h("span",{class:"ttl"},e.t),h("span",{class:"dsc"},e.d)),
         h("span",{class:"plant"},plant(stage(e.id))))); });
     app.append(h("section",{class:"group"},h("h2",{},gr.t),h("p",{},gr.d),cards)); }
-  app.append(h("p",{class:"small",style:"margin-top:28px"},"Tipp für Eltern: Würfel und Netze gehen leichter mit echtem Material. Einen Würfel in die Hand nehmen oder ein Netz aus Häuschenpapier ausschneiden und falten hilft beim Vorstellen."));
+  app.append(h("p",{class:"small",style:"margin-top:28px"},"Tipp für Eltern: Würfel und Netze gehen leichter mit echtem Material. Einen Würfel in die Hand nehmen oder ein Netz aus Häuschenpapier ausschneiden und falten hilft beim Vorstellen. ",
+    h("a",{href:"zahlen-uhr.html",style:"color:var(--blue);font-weight:700"},"Neu: «Zahlen & Uhr» für das 2. Quintal →")));
 }
 function exercise(i){
   const ex=EXS[i]; let variant=0, helped=false, solvedNow=false;

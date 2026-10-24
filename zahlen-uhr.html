@@ -1,0 +1,730 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Zahlen &amp; Uhr</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Grandstander:wght@600;800&family=Gochi+Hand&display=swap">
+<style>
+/* Same worksheet look as index.html (Raum & Muster): yellow bar = Grundanforderungen, green bar = erweiterte Anforderungen. */
+:root{
+  --paper:#fbfcfe; --sheet:#ffffff; --ink:#1d2742; --muted:#5d6782; --line:#cfd8e4; --gridfaint:rgba(120,150,190,.10);
+  --blue:#1c3f9c; --red:#d0302f; --teacher:#0b8a68; --teachersoft:#d9f2ea; --orange:#e07b00;
+  --yellow:#e8e070; --green:#5fb565; --plate:#bde0fe; --stick:#ffd6a5; --cube:#d8c8ff;
+  --f-display:"Grandstander","Comic Sans MS","Trebuchet MS",sans-serif;
+  --f-body:"Andika","Segoe UI","Helvetica Neue",Arial,sans-serif;
+  --f-hand:"Gochi Hand","Comic Sans MS",cursive;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#121826; --sheet:#1a2233; --ink:#e8edf7; --muted:#a3adc4; --line:#33405a; --gridfaint:rgba(140,170,220,.07);
+  --blue:#86a8ff; --red:#ff6f6b; --teacher:#41d3a8; --teachersoft:#173d36; --orange:#ffa53d;
+  --yellow:#c9c055; --green:#4fa857; --plate:#1f4a6e; --stick:#6b4a24; --cube:#4a3a7a;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#121826; --sheet:#1a2233; --ink:#e8edf7; --muted:#a3adc4; --line:#33405a; --gridfaint:rgba(140,170,220,.07);
+  --blue:#86a8ff; --red:#ff6f6b; --teacher:#41d3a8; --teachersoft:#173d36; --orange:#ffa53d;
+  --yellow:#c9c055; --green:#4fa857; --plate:#1f4a6e; --stick:#6b4a24; --cube:#4a3a7a;
+  color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.5;
+  background-image:linear-gradient(var(--gridfaint) 1px,transparent 1px),linear-gradient(90deg,var(--gridfaint) 1px,transparent 1px);
+  background-size:22px 22px}
+.wrap{max-width:860px;margin:0 auto;padding-block:20px 48px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;line-height:1.15;margin:0}
+h1{font-size:clamp(30px,6vw,44px);font-weight:800;color:var(--blue)}
+h2{font-size:22px;font-weight:600}
+p{margin:0}
+a{color:var(--blue);font-weight:700}
+.intro{display:grid;gap:8px;margin-bottom:22px}
+.intro p{max-width:62ch;color:var(--muted)}
+.total{font-family:var(--f-hand);color:var(--teacher);font-size:22px}
+.group{display:grid;gap:10px;margin-top:22px}
+.group>p{color:var(--muted);font-size:15px;max-width:62ch}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+.card{display:grid;grid-template-columns:10px 1fr auto;align-items:stretch;background:var(--sheet);border:1px solid var(--line);
+  border-radius:6px;overflow:hidden;cursor:pointer;text-align:left;font:inherit;color:inherit;padding:0}
+.card:hover{border-color:var(--blue)}
+.card:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid var(--orange);outline-offset:2px}
+.bar{background:var(--green)}
+.bar.grund{background:var(--yellow)}
+.card .txt{padding:12px 10px 12px 14px;display:grid;gap:2px;min-width:0}
+.card .num{font-family:var(--f-display);font-size:14px;color:var(--muted)}
+.card .ttl{font-weight:700;line-height:1.25}
+.card .dsc{font-size:14px;color:var(--muted)}
+.card .plant{padding:10px 12px 10px 0;display:flex;align-items:flex-end}
+.plant svg{width:34px;height:34px}
+.plant svg *{stroke:var(--teacher);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.plant svg .fill{fill:var(--teacher)}
+.plant svg .soil{stroke:var(--muted)}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:14px;color:var(--muted);align-items:center}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend svg{width:28px;height:28px}
+.legend svg *{stroke:var(--teacher);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.legend svg .soil{stroke:var(--muted)} .legend svg .fill{fill:var(--teacher)}
+.legend i{display:inline-block;width:10px;height:18px;border-radius:2px}
+.small{font-size:14px;color:var(--muted)}
+
+/* exercise page */
+.back{background:none;border:0;color:var(--blue);font:inherit;font-weight:700;cursor:pointer;padding:6px 0;margin-bottom:8px}
+.sheet{background:var(--sheet);border:1px solid var(--line);border-radius:6px;display:grid;grid-template-columns:12px 1fr;overflow:hidden}
+.sheet .inner{padding:18px clamp(12px,3vw,26px) 22px;display:grid;gap:16px;min-width:0}
+.head{display:grid;gap:4px}
+.head .num{font-family:var(--f-display);color:var(--muted);font-size:15px}
+.level{font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.howto{background:var(--paper);border:1px dashed var(--line);border-radius:6px;padding:12px 14px;display:grid;gap:6px}
+.howto b{font-family:var(--f-display);font-weight:600}
+.howto ul{margin:0;padding-left:22px;display:grid;gap:3px}
+.task{display:grid;gap:16px;min-width:0}
+.question{font-size:19px;font-weight:700}
+.btns{display:flex;flex-wrap:wrap;gap:8px}
+button.b{font:inherit;font-size:16px;font-weight:700;padding:9px 14px;border-radius:8px;border:2px solid var(--line);background:var(--sheet);color:var(--ink);cursor:pointer}
+button.b:hover{border-color:var(--blue)}
+button.b.go{background:var(--teacher);border-color:var(--teacher);color:var(--sheet)}
+button.b.soft{color:var(--muted);font-weight:400}
+.feedback{font-family:var(--f-hand);font-size:24px;line-height:1.25;min-height:30px;color:var(--ink)}
+.feedback.good{color:var(--teacher)}
+.feedback.bad{color:var(--red)}
+.feedback.info{color:var(--muted);font-family:var(--f-body);font-size:16px}
+.foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;margin-top:16px}
+
+/* answer fields */
+.rows{display:grid;gap:12px}
+.eq{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;font-family:var(--f-display);font-size:22px;font-weight:600;font-variant-numeric:tabular-nums}
+.eq .lbl{font-family:var(--f-body);font-size:16px;font-weight:700;color:var(--muted);min-width:9.5em}
+.eq .tag{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--blue);color:var(--sheet);font-size:17px}
+input.inp{font:inherit;padding:2px 6px;border:2px solid var(--line);border-radius:6px;background:var(--paper);color:var(--ink);text-align:center;min-width:2.6ch}
+input.inp.ok{border-color:var(--teacher);background:var(--teachersoft)}
+input.inp.no{border-color:var(--red);color:var(--red)}
+input.inp.shown{border-color:var(--teacher);border-style:dashed;color:var(--teacher)}
+
+/* number line */
+svg.nl{display:block;width:100%;height:auto;user-select:none}
+svg.nl.tap{cursor:pointer;touch-action:manipulation}
+.nlLine{stroke:var(--ink);stroke-width:2.5}
+.nlHead{fill:var(--ink)}
+.nlTick{stroke:var(--ink);stroke-width:2}
+.nlLbl{fill:var(--ink);font-family:var(--f-display);font-size:22px;font-weight:600;text-anchor:middle}
+.nlArrow{stroke:var(--blue);stroke-width:3}
+.nlArrowHead,.nlBadge{fill:var(--blue)}
+.nlName{fill:var(--sheet);font-family:var(--f-display);font-size:16px;font-weight:800;text-anchor:middle;dominant-baseline:central}
+.nlMark line{stroke-width:3.5;stroke-linecap:round}
+.nlMark text{font-family:var(--f-display);font-size:18px;font-weight:800;text-anchor:middle}
+.nlMark.ok line{stroke:var(--teacher)} .nlMark.ok circle,.nlMark.ok text{fill:var(--teacher)}
+.nlMark.no line{stroke:var(--red)} .nlMark.no circle,.nlMark.no text{fill:var(--red)}
+.nlMark.sol line{stroke:var(--teacher);stroke-dasharray:4 3} .nlMark.sol circle{fill:none;stroke:var(--teacher);stroke-width:2.5} .nlMark.sol text{fill:var(--teacher)}
+.target{font-family:var(--f-display);font-size:30px;font-weight:800;color:var(--blue)}
+
+/* chips, cards, compare */
+.chips{display:flex;flex-wrap:wrap;gap:8px;align-items:center;min-height:46px}
+.chip{display:inline-grid;place-items:center;min-width:62px;height:42px;padding:0 10px;border:2px solid var(--blue);border-radius:8px;color:var(--blue);background:var(--sheet);font-family:var(--f-display);font-size:22px;font-weight:600;font-variant-numeric:tabular-nums}
+button.chip{cursor:pointer;font-family:var(--f-display)}
+button.chip:disabled{opacity:.3;cursor:default}
+.chip.placed{border-color:var(--teacher);color:var(--teacher)}
+.chip.wrong{border-color:var(--red);color:var(--red)}
+.chip.sol{border-style:dashed;border-color:var(--teacher);color:var(--teacher)}
+.lt{font-family:var(--f-display);font-size:22px;color:var(--muted)}
+.digits{display:flex;gap:10px;flex-wrap:wrap}
+.dcard{font-family:var(--f-display);font-size:34px;font-weight:800;width:64px;height:78px;border:2px solid var(--blue);border-radius:8px;background:var(--sheet);color:var(--blue);cursor:pointer}
+.dcard:disabled{opacity:.3;cursor:default}
+.slot{width:64px;height:78px;border:2px dashed var(--line);border-radius:8px;display:inline-grid;place-items:center;font-family:var(--f-display);font-size:34px;font-weight:800}
+.cmp{display:grid;grid-template-columns:1fr auto 1fr 1.4em;align-items:center;gap:8px}
+.cmp .side{font-family:var(--f-display);font-size:20px;white-space:nowrap;font-weight:600;text-align:center;font-variant-numeric:tabular-nums}
+.cmp .sym{width:50px;height:50px;border-radius:50%!important;font:inherit;font-family:var(--f-display);font-size:24px;font-weight:800;border:2px solid var(--line);border-radius:8px;background:var(--sheet);color:var(--ink);cursor:pointer}
+.cmp .sym.on{border-color:var(--blue);background:var(--plate)}
+.cmp .sym.ok{border-color:var(--teacher);background:var(--teachersoft)}
+.cmp .sym.no{border-color:var(--red);color:var(--red)}
+.cmp .sym.shown{border-color:var(--teacher);border-style:dashed}
+.mark{font-family:var(--f-hand);font-size:22px;min-width:1.5em}
+.mark.ok{color:var(--teacher)} .mark.no{color:var(--red)}
+.riddle{margin:0;padding-left:24px;display:grid;gap:6px;font-size:18px}
+.answers{display:flex;flex-wrap:wrap;gap:8px}
+.ans{padding:10px 14px;border:2px solid var(--line);border-radius:8px;background:var(--sheet);cursor:pointer;font:inherit;font-weight:700;color:var(--ink)}
+.ans:hover{border-color:var(--blue)}
+.ans.right{border-color:var(--teacher);background:var(--teachersoft)}
+.ans.wrong{border-color:var(--red);opacity:.6}
+
+/* place value blocks */
+svg.blocks{display:block;width:100%;height:auto}
+.plate{fill:var(--plate);stroke:var(--blue);stroke-width:1.5}
+.stick{fill:var(--stick);stroke:var(--orange);stroke-width:1.5}
+.cube{fill:var(--cube);stroke:var(--ink);stroke-width:1.2}
+.gridln{stroke:var(--blue);stroke-width:.5;opacity:.5}
+.stickln{stroke:var(--orange);stroke-width:.6;opacity:.7}
+
+/* clock */
+.clockRow{display:flex;flex-wrap:wrap;gap:18px;align-items:center}
+svg.clock{width:230px;height:230px;flex:none;user-select:none}
+svg.clock.tap{cursor:pointer;touch-action:manipulation}
+.face{fill:var(--sheet);stroke:var(--ink);stroke-width:4}
+.tk{stroke:var(--ink);stroke-width:1.4}
+.tk.big{stroke-width:3.4}
+.cnum{font-family:var(--f-display);font-size:19px;font-weight:600;fill:var(--ink);text-anchor:middle;dominant-baseline:central}
+.hh{stroke:var(--blue);stroke-width:7;stroke-linecap:round}
+.mh{stroke:var(--red);stroke-width:4.5;stroke-linecap:round}
+.hub{fill:var(--ink)}
+.digital{display:inline-block;font-family:ui-monospace,"Cascadia Mono","Courier New",monospace;font-size:34px;font-weight:700;padding:6px 16px;border-radius:8px;background:#1d2742;color:#7cf5c0;letter-spacing:.06em;font-variant-numeric:tabular-nums}
+.ctx{font-size:19px;font-weight:700;color:var(--blue)}
+.story{font-size:19px;max-width:44ch}
+
+/* number wall */
+.wall{display:grid;gap:4px;justify-content:center}
+.wrow{display:flex;gap:4px;justify-content:center}
+.brick{width:96px;height:52px;border:2px solid var(--ink);border-radius:4px;display:grid;place-items:center;font-family:var(--f-display);font-size:22px;font-weight:600;background:var(--sheet);font-variant-numeric:tabular-nums}
+.brick input.inp{width:78px}
+@media (prefers-reduced-motion:no-preference){.feedback.good{animation:pop .35s ease-out}@keyframes pop{from{transform:scale(.92)}to{transform:none}}}
+</style>
+</head><body>
+
+<div class="wrap" id="app"></div>
+
+<script>
+"use strict";
+/* ---------- helpers ---------- */
+const NS = "http://www.w3.org/2000/svg";
+function h(tag, attrs, ...kids){ const el=document.createElement(tag); for(const k in (attrs||{})){ const v=attrs[k]; if(k==="on") for(const e in v) el.addEventListener(e,v[e]); else if(v!==false&&v!=null) el.setAttribute(k,v);} for(const c of kids.flat()) if(c!=null&&c!==false) el.append(c.nodeType?c:document.createTextNode(c)); return el; }
+function s(tag, attrs, ...kids){ const el=document.createElementNS(NS,tag); for(const k in (attrs||{})) if(attrs[k]!=null) el.setAttribute(k,attrs[k]); for(const c of kids.flat()) if(c!=null&&c!==false) el.append(c.nodeType?c:document.createTextNode(c)); return el; }
+const rnd = n => Math.floor(Math.random()*n);
+const rint = (a,b) => a+rnd(b-a+1);
+const pick = a => a[rnd(a.length)];
+const shuffle = a => { a=[...a]; for(let i=a.length-1;i>0;i--){ const j=rnd(i+1); [a[i],a[j]]=[a[j],a[i]]; } return a; };
+const pad2 = n => String(n).padStart(2,"0");
+const PRAISE = ["Super gemacht!","Bravo, alles richtig!","Toll, genau so!","Stark, richtig gelöst!","Wunderbar!"];
+
+const KEY="zahlen-uhr-v1";
+let prog = {};
+try { prog = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch(e) { prog = {}; }
+function addSolved(id){ prog[id]=(prog[id]||0)+1; try{ localStorage.setItem(KEY, JSON.stringify(prog)); }catch(e){} }
+
+function plant(n){
+  const g = s("svg",{viewBox:"0 0 34 34","aria-hidden":"true"});
+  g.append(s("line",{x1:3,y1:30,x2:31,y2:30,class:"soil"}));
+  if(n<=0){ g.append(s("ellipse",{cx:17,cy:27,rx:3.5,ry:2.4})); return g; }
+  const top = n===1?22:n===2?15:12;
+  g.append(s("path",{d:`M17 30 V${top}`}));
+  g.append(s("path",{d:`M17 ${top+4} q-6 -1 -7 -6 q6 0 7 6`}));
+  if(n>=2) g.append(s("path",{d:`M17 ${top+7} q6 -1 7 -6 q-6 0 -7 6`}));
+  if(n>=3){ for(let a=0;a<5;a++){ const r=a*72*Math.PI/180; g.append(s("circle",{cx:17+4.5*Math.sin(r),cy:top-3-4.5*Math.cos(r),r:2.6})); } g.append(s("circle",{cx:17,cy:top-3,r:1.8,class:"fill"})); }
+  return g;
+}
+function stage(id){ const c=prog[id]||0; return c>=3?3:c; }
+
+/* ---------- answer fields ----------
+   B.inp(answer, {ok, show, tip}) makes a number field; B.controls adds Prüfen / Tipp / Lösung zeigen. */
+function blanks(){
+  const list=[], B={list};
+  B.inp=(ans,o={})=>{
+    const show=o.show!=null?String(o.show):String(ans);
+    const el=h("input",{class:"inp",type:"text",inputmode:"numeric",autocomplete:"off",spellcheck:"false","aria-label":o.label||"Antwort",maxlength:o.max||5});
+    el.style.width=(o.w||Math.max(2,show.length)+1.6)+"ch";
+    const b={el,ans,show,tip:o.tip,ok:o.ok||(v=>Number(v)===ans)};
+    list.push(b);
+    el.addEventListener("input",()=>{ const c=el.value.replace(/[^0-9]/g,""); if(c!==el.value) el.value=c; el.classList.remove("ok","no","shown"); });
+    el.addEventListener("keydown",e=>{ if(e.key==="Enter"&&B.onEnter) B.onEnter(); });
+    return el;
+  };
+  const good=b=>b.el.value!==""&&b.ok(b.el.value);
+  B.check=()=>{ let empty=0,wrong=0;
+    for(const b of list){ b.el.classList.remove("ok","no"); if(b.el.value===""){ empty++; continue; } if(b.ok(b.el.value)) b.el.classList.add("ok"); else { wrong++; b.el.classList.add("no"); } }
+    return {empty,wrong}; };
+  B.reveal=()=>{ for(const b of list){ if(good(b)) b.el.classList.add("ok"); else { b.el.value=b.show; b.el.classList.remove("no"); b.el.classList.add("shown"); } } };
+  B.controls=(area,api,o={})=>{
+    const go=()=>{ const r=B.check();
+      if(!r.empty&&!r.wrong){ api.solved(); return; }
+      if(r.wrong) api.say(r.wrong===1?"Ein rotes Feld stimmt noch nicht. Versuch es nochmals!":`${r.wrong} rote Felder stimmen noch nicht. Versuch es nochmals!`,"bad");
+      else api.say(r.empty===list.length?"Schreib zuerst deine Antworten in die Felder.":"Alles, was du geschrieben hast, stimmt! Es fehlen noch Felder.","info"); };
+    B.onEnter=go;
+    area.append(h("div",{class:"btns"},
+      h("button",{class:"b go",on:{click:go}},"Prüfen"),
+      h("button",{class:"b soft",on:{click:()=>{ api.helped(); const b=list.find(x=>!good(x)); if(b) b.el.focus();
+        const t=(b&&b.tip)||o.tip; api.say(typeof t==="function"?t():(t||"Lies die Aufgabe nochmals genau."),"info"); }}},"Tipp"),
+      h("button",{class:"b soft",on:{click:()=>{ api.helped(); B.reveal(); api.say(o.solText||"Die grünen Zahlen mit gestricheltem Rand sind die Lösung.","info"); }}},"Lösung zeigen")));
+  };
+  return B;
+}
+
+/* ---------- number line ---------- */
+function numberLine(o){
+  const W=540, M=30, hasA=o.arrows&&o.arrows.length, Y=hasA?88:56, H=Y+44;
+  const X=v=>M+(v-o.from)/(o.to-o.from)*(W-2*M);
+  const svg=s("svg",{viewBox:`0 0 ${W} ${H}`,class:"nl"+(o.tap?" tap":""),role:"img","aria-label":`Zahlenstrahl von ${o.from} bis ${o.to}`});
+  svg.append(s("line",{x1:M-16,y1:Y,x2:W-M+18,y2:Y,class:"nlLine"}));
+  svg.append(s("polygon",{points:`${W-M+28},${Y} ${W-M+15},${Y-7} ${W-M+15},${Y+7}`,class:"nlHead"}));
+  for(let v=o.from; v<=o.to; v+=o.step){ const L = o.major&&v%o.major===0?15 : o.mid&&v%o.mid===0?11 : 7;
+    svg.append(s("line",{x1:X(v),y1:Y-L,x2:X(v),y2:Y+L,class:"nlTick"})); }
+  for(const v of o.labels||[]) svg.append(s("text",{x:X(v),y:Y+36,class:"nlLbl"},String(v)));
+  for(const a of o.arrows||[]){ const x=X(a.v);
+    svg.append(s("line",{x1:x,y1:Y-50,x2:x,y2:Y-24,class:"nlArrow"}));
+    svg.append(s("polygon",{points:`${x},${Y-13} ${x-7},${Y-26} ${x+7},${Y-26}`,class:"nlArrowHead"}));
+    svg.append(s("circle",{cx:x,cy:Y-66,r:14,class:"nlBadge"}));
+    svg.append(s("text",{x,y:Y-66,class:"nlName"},a.name)); }
+  const marks=s("g"); svg.append(marks);
+  const L={svg};
+  L.mark=(v,cls,label)=>{ const x=X(v), g=s("g",{class:"nlMark "+cls});
+    g.append(s("line",{x1:x,y1:Y-24,x2:x,y2:Y})); g.append(s("circle",{cx:x,cy:Y,r:6}));
+    if(label!=null) g.append(s("text",{x,y:Y-31},String(label)));
+    marks.append(g); return g; };
+  if(o.tap) svg.addEventListener("click",e=>{ const r=svg.getBoundingClientRect(), x=(e.clientX-r.left)/r.width*W, n=(o.to-o.from)/o.step;
+    const k=Math.max(0,Math.min(n,Math.round((x-M)/(W-2*M)*n))); o.tap(o.from+k*o.step); });
+  return L;
+}
+const ticks = c => { const t=[]; for(let v=c.from; v<=c.to; v+=c.step) t.push(v); return t; };
+// three kinds of number lines, like in the Zahlenbuch: whole 0–1000, a 200-section, a 100-section
+function lineCfg(kind){
+  if(kind===0) return {from:0,to:1000,step:50,major:100,labels:[0,500,1000]};
+  if(kind===1){ const H=rnd(9)*100; return {from:H,to:H+200,step:10,major:100,mid:50,labels:[H,H+100,H+200]}; }
+  const H=rnd(10)*100; return {from:H,to:H+100,step:5,major:50,mid:10,labels:[H,H+50,H+100]};
+}
+const freeTicks = (c,n) => shuffle(ticks(c).filter(v=>!c.labels.includes(v))).slice(0,n);
+const stepTip = (c,v) => { const below=Math.max(...c.labels.filter(l=>l<=v)); return `Von einem Strich zum nächsten sind es ${c.step}. Zähle von ${below} aus weiter: ${below}, ${below+c.step}, ${below+2*c.step}, …`; };
+
+function readLineTask(area, api, v){
+  const c=lineCfg(v%3), vals=freeTicks(c,3), names=["A","B","C"];
+  c.arrows=vals.map((x,i)=>({v:x,name:names[i]}));
+  area.append(numberLine(c).svg);
+  const B=blanks();
+  area.append(h("div",{class:"rows"}, vals.map((x,i)=>h("div",{class:"eq"},h("span",{class:"tag"},names[i]),"=",B.inp(x,{label:"Zahl bei "+names[i],tip:()=>`${names[i]}: `+stepTip(c,x)})))));
+  B.controls(area,api);
+}
+function placeLineTask(area, api, v){
+  const c=lineCfg(v%3), targets=freeTicks(c,3); let at=0, bad=null;
+  const q=h("p",{class:"question"},"Tippe auf die Stelle für ",h("span",{class:"target"},String(targets[0])));
+  const L=numberLine({...c, tap:x=>{
+    if(at>=targets.length) return;
+    if(bad){ bad.remove(); bad=null; }
+    if(x===targets[at]){ L.mark(x,"ok",x); at++;
+      if(at===targets.length){ q.textContent="Alle drei Zahlen sind eingezeichnet."; api.solved(); }
+      else { q.lastChild.textContent=String(targets[at]); api.say("Richtig! Jetzt die nächste Zahl.","info"); } }
+    else { bad=L.mark(x,"no",x); api.say(`Hier liegt ${x}. Gesucht ist ${targets[at]}. ${x<targets[at]?"Weiter nach rechts!":"Weiter nach links!"}`,"bad"); } }});
+  area.append(q, L.svg);
+  area.append(h("div",{class:"btns"},
+    h("button",{class:"b soft",on:{click:()=>{ api.helped(); if(at<targets.length) api.say(stepTip(c,targets[at]),"info"); }}},"Tipp"),
+    h("button",{class:"b soft",on:{click:()=>{ api.helped(); if(bad){ bad.remove(); bad=null; } for(let i=at;i<targets.length;i++) L.mark(targets[i],"sol",targets[i]); at=targets.length;
+      q.textContent="So liegen die Zahlen."; api.say("Die gestrichelten Striche zeigen, wo die Zahlen liegen.","info"); }}},"Lösung zeigen")));
+}
+function cutLineTask(area, api){
+  const step=pick([2,5,20,25,50]), n=pick([10,12]), span=step*n;
+  const from=Math.floor(rint(0,1000-span)/step)*step;
+  const i1=1+rnd(3), i2=i1+2+rnd(3), l1=from+i1*step, l2=from+i2*step;
+  const idx=shuffle([...Array(n+1).keys()].filter(i=>i!==i1&&i!==i2)).slice(0,3), names=["A","B","C"];
+  const vals=idx.map(i=>from+i*step);
+  area.append(numberLine({from,to:from+span,step,labels:[l1,l2],arrows:vals.map((x,i)=>({v:x,name:names[i]}))}).svg);
+  const tip=`Zwischen ${l1} und ${l2} liegen ${i2-i1} Abstände. ${l2-l1} : ${i2-i1} = ${step}. Ein Abstand ist also ${step}.`;
+  const B=blanks();
+  area.append(h("div",{class:"rows"}, vals.map((x,i)=>h("div",{class:"eq"},h("span",{class:"tag"},names[i]),"=",B.inp(x,{label:"Zahl bei "+names[i]})))));
+  B.controls(area,api,{tip});
+}
+
+/* ---------- ordering ---------- */
+const digitsOf = n => [Math.floor(n/100), Math.floor(n/10)%10, n%10];
+function threeDigits(withZero){ const d=shuffle([1,2,3,4,5,6,7,8,9]).slice(0,3); if(withZero) d[2]=0; return d; }
+function permsOf(d){ const r=[]; for(let i=0;i<3;i++) for(let j=0;j<3;j++) for(let k=0;k<3;k++) if(i!==j&&j!==k&&i!==k&&d[i]!==0) r.push(100*d[i]+10*d[j]+d[k]); return [...new Set(r)]; }
+function orderSet(kind){
+  if(kind===0) return shuffle(permsOf(threeDigits(false))).slice(0,5);
+  if(kind===1){ const b=rint(2,9)*100; return shuffle([b-1,b+1,b-10,b+10,b+9,b-9,b-90,b+90,b-100+1].filter(x=>x>=100&&x<=999)).slice(0,5); }
+  const H=rint(1,9)*100, set=new Set(); const z=rnd(10);
+  set.add(H+10*z+rnd(10)); set.add(H+10*z+rnd(10));
+  while(set.size<5) set.add(H+rnd(100)); return shuffle([...set]);
+}
+function orderTask(area, api, v){
+  const up=rnd(3)>0, nums=orderSet(v%3), sorted=[...nums].sort((a,b)=>up?a-b:b-a);
+  let at=0;
+  area.append(h("p",{class:"question"}, up?"Vom kleinsten zum grössten:":"Vom grössten zum kleinsten:"));
+  const row=h("div",{class:"chips","aria-live":"polite"}), pool=h("div",{class:"chips"});
+  const btns=nums.map(n=>{ const b=h("button",{class:"chip",on:{click:()=>{
+    if(at>=sorted.length) return;
+    if(n===sorted[at]){ b.disabled=true; if(at) row.append(h("span",{class:"lt"},up?"<":">")); row.append(h("span",{class:"chip placed"},String(n))); at++;
+      if(at===sorted.length) api.solved(); else api.say("","info"); }
+    else { b.classList.add("wrong"); setTimeout(()=>b.classList.remove("wrong"),700);
+      api.say(`${n} ist noch nicht die ${up?"kleinste":"grösste"} Zahl. Vergleiche zuerst die Hunderter, dann die Zehner.`,"bad"); } }}},String(n)); pool.append(b); return b; });
+  area.append(pool, row);
+  area.append(h("div",{class:"btns"},
+    h("button",{class:"b soft",on:{click:()=>{ api.helped(); api.say(`Tipp: Schau zuerst auf die Hunderterziffer. Ist sie gleich, entscheidet die Zehnerziffer, dann die Einerziffer. Die nächste Zahl beginnt mit ${String(sorted[at]??"")[0]??""}.`,"info"); }}},"Tipp"),
+    h("button",{class:"b soft",on:{click:()=>{ api.helped(); for(const b of btns) b.disabled=true;
+      for(let i=at;i<sorted.length;i++){ if(i) row.append(h("span",{class:"lt"},up?"<":">")); row.append(h("span",{class:"chip sol"},String(sorted[i]))); } at=sorted.length;
+      api.say("So ist die richtige Reihenfolge.","info"); }}},"Lösung zeigen")));
+}
+
+function comparePair(kind){
+  if(kind===0){ const p=shuffle(permsOf(threeDigits(false))); return [String(p[0]),p[0],String(p[1]),p[1]]; }
+  if(kind===1){ const p=shuffle(permsOf(threeDigits(true))); return [String(p[0]),p[0],String(p[1]),p[1]]; }
+  if(kind===2){ const a=rint(100,990), b=Math.max(100,Math.min(999,a+pick([-1,1])*rint(1,12)));
+    return rnd(2)?[String(a),a,String(b),b]:[String(b),b,String(a),a]; }
+  if(kind===3){ const [H,Z,E]=digitsOf(rint(101,999)), n=100*H+10*Z+E, ex=[H?H*100:null,Z?Z*10:null,E||null].filter(Boolean).join(" + ");
+    const other=pick([n,n,100*H+10*E+Z,n+pick([-10,10,1,-1])]); return rnd(2)?[ex,n,String(other),other]:[String(other),other,ex,n]; }
+  const H=rint(1,9), d=rint(1,9), n=100*H+d;
+  const txt=rnd(2)?`${H} H ${d} E`:`${H} H ${d} Z`, val=txt.endsWith("E")?n:100*H+10*d;
+  const other=pick([100*H+10*d, 100*H+d, val]); return [txt,val,String(other),other];
+}
+const CYCLE=["<","=",">"];
+function compareTask(area, api){
+  const kinds=shuffle([0,1,2,3,4]), B=[];
+  const rows=h("div",{class:"rows"});
+  for(const k of kinds){ const [lt,lv,rt,rv]=comparePair(k), ans=lv<rv?"<":lv>rv?">":"=";
+    const mark=h("span",{class:"mark"}), r={ans,mark,sel:null};
+    const sym=h("button",{class:"sym","aria-label":"Zeichen wählen",on:{click:()=>{ r.sel=CYCLE[(CYCLE.indexOf(r.sel)+1)%3]; sym.textContent=r.sel; sym.className="sym on"; mark.textContent=""; }}},"?");
+    r.sym=sym;
+    B.push(r); rows.append(h("div",{class:"cmp"},h("span",{class:"side"},lt),sym,h("span",{class:"side"},rt),mark)); }
+  area.append(rows);
+  area.append(h("div",{class:"btns"},
+    h("button",{class:"b go",on:{click:()=>{ let wrong=0,empty=0;
+      for(const r of B){ if(!r.sel){ empty++; continue; } const ok=r.sel===r.ans; if(!ok) wrong++; r.sym.className="sym "+(ok?"ok":"no"); r.mark.textContent=ok?"✓":"✗"; r.mark.className="mark "+(ok?"ok":"no"); }
+      if(!wrong&&!empty) api.solved(); else if(wrong) api.say(`${wrong} ${wrong===1?"Zeichen stimmt":"Zeichen stimmen"} noch nicht. Die Spitze zeigt immer zur kleineren Zahl.`,"bad"); else api.say("Wähle bei jeder Zeile ein Zeichen.","info"); }}},"Prüfen"),
+    h("button",{class:"b soft",on:{click:()=>{ api.helped(); api.say("Tipp: Das Zeichen ist wie ein Krokodilmaul: Es frisst immer die grössere Zahl. Rechne Aufgaben wie «300 + 40 + 5» zuerst aus. H heisst Hunderter, Z Zehner, E Einer.","info"); }}},"Tipp"),
+    h("button",{class:"b soft",on:{click:()=>{ api.helped(); for(const r of B){ r.sym.textContent=r.ans; r.sym.className="sym "+(r.sel===r.ans?"ok":"shown"); } api.say("Die gestrichelten Zeichen sind die Lösung.","info"); }}},"Lösung zeigen")));
+}
+
+function neighbourTask(area, api){
+  let n; do n=rint(101,989); while(n%10===0);
+  const B=blanks(), z=Math.floor(n/10)*10, hh=Math.floor(n/100)*100;
+  const row=(lbl,a,b,tip)=>h("div",{class:"eq"},h("span",{class:"lbl"},lbl),B.inp(a,{tip}),h("span",{class:"lt"},"<"),String(n),h("span",{class:"lt"},"<"),B.inp(b,{tip}));
+  area.append(h("div",{class:"rows"},
+    row("Vorgänger und Nachfolger",n-1,n+1,"Der Vorgänger ist 1 kleiner, der Nachfolger 1 grösser."),
+    row("Nachbarzehner",z,z+10,`Nachbarzehner enden mit 0. Welche Zehnerzahlen liegen direkt vor und nach ${n}?`),
+    row("Nachbarhunderter",hh,hh+100,`Nachbarhunderter enden mit 00. ${n} liegt zwischen welchen Hunderterzahlen?`)));
+  B.controls(area,api);
+}
+
+/* ---------- exploring numbers ---------- */
+function blocksSVG(H,Z,E){
+  const c=8, P=10*c, g=s("svg",{class:"blocks",role:"img","aria-label":`${H} Hunderterplatten, ${Z} Zehnerstangen, ${E} Einerwürfel`});
+  let x=4; const cols=Math.min(H,5), rows=Math.ceil(H/5);
+  for(let i=0;i<H;i++){ const px=4+(i%5)*(P+8), py=4+Math.floor(i/5)*(P+8);
+    g.append(s("rect",{x:px,y:py,width:P,height:P,class:"plate"}));
+    for(let k=1;k<10;k++){ g.append(s("line",{x1:px+k*c,y1:py,x2:px+k*c,y2:py+P,class:"gridln"})); g.append(s("line",{x1:px,y1:py+k*c,x2:px+P,y2:py+k*c,class:"gridln"})); } }
+  x=4+cols*(P+8)+(H?14:0);
+  for(let i=0;i<Z;i++){ const px=x+i*(c+6); g.append(s("rect",{x:px,y:4,width:c,height:P,class:"stick"}));
+    for(let k=1;k<10;k++) g.append(s("line",{x1:px,y1:4+k*c,x2:px+c,y2:4+k*c,class:"stickln"})); }
+  x+=Z*(c+6)+(Z?14:0);
+  for(let i=0;i<E;i++) g.append(s("rect",{x:x+(i%3)*(c+6),y:4+P-c-Math.floor(i/3)*(c+6),width:c,height:c,class:"cube"}));
+  x+=E?3*(c+6):0;
+  const W=Math.max(x+4,120), Ht=4+Math.max(rows,1)*(P+8);
+  g.setAttribute("viewBox",`0 0 ${W} ${Ht}`); g.style.maxWidth=Math.round(W*1.25)+"px";
+  return g;
+}
+function blocksTask(area, api){
+  let H=rint(1,9), Z=pick([0,rint(1,9),rint(1,9),rint(1,9)]), E=pick([0,rint(1,9),rint(1,9)]);
+  const n=100*H+10*Z+E, B=blanks();
+  area.append(blocksSVG(H,Z,E));
+  area.append(h("div",{class:"rows"},
+    h("div",{class:"eq"},"H",B.inp(H,{label:"Hunderter"}),"Z",B.inp(Z,{label:"Zehner"}),"E",B.inp(E,{label:"Einer"})),
+    h("div",{class:"eq"},h("span",{},"Zahl:"),B.inp(n,{label:"Zahl",tip:Z===0||E===0?"Gibt es keine Zehner oder keine Einer, schreibst du an diese Stelle eine 0.":"Schreibe die Hunderter, dann die Zehner, dann die Einer nebeneinander."}))));
+  B.controls(area,api,{tip:"Eine Platte ist 100, eine Stange ist 10, ein Würfelchen ist 1. Zähle jede Sorte."});
+}
+function bundleTask(area, api){
+  const B=blanks(), rows=[];
+  { const H=rint(1,7), Z=rint(10,19), E=rint(0,9); rows.push([`${H} H ${Z} Z ${E} E`, 100*H+10*Z+E, `${Z} Zehner sind 1 Hunderter und ${Z-10} Zehner.`]); }
+  { const H=rint(1,8), E=rint(10,19); rows.push([`${H} H ${E} E`, 100*H+E, `${E} Einer sind 1 Zehner und ${E-10} Einer.`]); }
+  { const H=rint(1,9), E=rint(1,9); rows.push([`${H} H ${E} E`, 100*H+E, "Es gibt keine Zehner. An die Zehnerstelle kommt eine 0."]); }
+  { const Z=rint(21,69); rows.push([`${Z} Z`, 10*Z, `10 Zehner sind 1 Hunderter. ${Z} Zehner sind also ${Math.floor(Z/10)} Hunderter und ${Z%10} Zehner.`]); }
+  const lines=rows.map(([t,a,tip])=>h("div",{class:"eq"},h("span",{style:"min-width:6.5em"},t),"=",B.inp(a,{tip})));
+  const m=rint(12,98)*10; lines.push(h("div",{class:"eq"},h("span",{},`In ${m} stecken`),B.inp(m/10,{tip:`Wie oft passt 10 in ${m}? Denk an ${Math.floor(m/100)} Hunderter = ${Math.floor(m/100)*10} Zehner.`}),"Zehner."));
+  area.append(h("div",{class:"rows"},lines));
+  B.controls(area,api);
+}
+function digitCardsTask(area, api, v){
+  const d=shuffle(threeDigits(v%2===1)), all=permsOf(d).sort((a,b)=>a-b), found=new Set();
+  let slots=[];
+  const slotEls=[0,1,2].map(()=>h("span",{class:"slot"},""));
+  const count=h("p",{class:"small"}), list=h("div",{class:"chips","aria-live":"polite"});
+  const cards=d.map((x,i)=>h("button",{class:"dcard","aria-label":"Karte "+x,on:{click:()=>put(i)}},String(x)));
+  const draw=()=>{ slotEls.forEach((e,i)=>e.textContent=slots[i]!=null?String(d[slots[i]]):""); cards.forEach((c,i)=>c.disabled=slots.includes(i));
+    count.textContent=`${found.size} von ${all.length} Zahlen gefunden`;
+    list.innerHTML=""; for(const n of [...found].sort((a,b)=>a-b)) list.append(h("span",{class:"chip placed"},String(n))); };
+  function put(i){ if(found.size===all.length) return; slots.push(i);
+    if(slots.length===3){ const n=100*d[slots[0]]+10*d[slots[1]]+d[slots[2]]; slots=[];
+      if(n<100) api.say("Eine dreistellige Zahl beginnt nie mit 0.","bad");
+      else if(found.has(n)) api.say(`${n} hast du schon gefunden. Probiere eine andere Reihenfolge.`,"info");
+      else { found.add(n); if(found.size===all.length){ draw(); api.solved(); api.say(`${pick(PRAISE)} Die grösste Zahl ist ${all[all.length-1]}, die kleinste ${all[0]}.`,"good"); return; } api.say(`${n} ist neu!`,"info"); } }
+    draw(); }
+  area.append(h("div",{class:"digits"},cards), h("div",{class:"digits"},slotEls), count, list);
+  area.append(h("div",{class:"btns"},
+    h("button",{class:"b",on:{click:()=>{ slots.pop(); draw(); }}},"Karte zurück"),
+    h("button",{class:"b soft",on:{click:()=>{ api.helped(); const miss=all.find(n=>!found.has(n)); api.say(`Tipp: Geh der Reihe nach vor. Lege zuerst alle Zahlen, die mit ${String(miss)[0]} beginnen. Dann tauschst du die zwei hinteren Karten.`,"info"); }}},"Tipp"),
+    h("button",{class:"b soft",on:{click:()=>{ api.helped(); list.innerHTML=""; for(const n of all) list.append(h("span",{class:found.has(n)?"chip placed":"chip sol"},String(n)));
+      api.say(`Es gibt ${all.length} Zahlen. Gestrichelt sind die, die noch gefehlt haben.`,"info"); }}},"Lösung zeigen")));
+  draw();
+}
+// a number riddle: pick random true clues until exactly one number from 100–999 is left
+function makeRiddle(){
+  for(let tries=0;tries<400;tries++){
+    let n; do n=rint(101,999); while(n%100===0);
+    const [H,Z,E]=digitsOf(n), sum=H+Z+E;
+    const pool=[
+      {k:"h",t:`Ich liege zwischen ${H*100} und ${H*100+100}.`,f:x=>x>H*100&&x<H*100+100},
+      {k:"z",t:`Meine Zehnerziffer ist ${Z}.`,f:x=>digitsOf(x)[1]===Z},
+      {k:"e",t:`Meine Einerziffer ist ${E}.`,f:x=>x%10===E},
+      {k:"p",t:n%2?"Ich bin eine ungerade Zahl.":"Ich bin eine gerade Zahl.",f:x=>x%2===n%2},
+      {k:"g",t:null,f:null},{k:"l",t:null,f:null},
+      {k:"s",t:`Zählst du meine drei Ziffern zusammen, gibt es ${sum}.`,f:x=>digitsOf(x).reduce((a,b)=>a+b)===sum},
+    ];
+    const ga=Math.max(100,Math.floor((n-1-rnd(25))/10)*10), la=Math.min(1000,Math.ceil((n+1+rnd(25))/10)*10);
+    pool[4]={k:"g",t:`Ich bin grösser als ${ga}.`,f:x=>x>ga}; pool[5]={k:"l",t:`Ich bin kleiner als ${la}.`,f:x=>x<la};
+    if(Z===E) pool.push({k:"q",t:"Meine Zehnerziffer und meine Einerziffer sind gleich.",f:x=>digitsOf(x)[1]===x%10});
+    else if(E===2*Z) pool.push({k:"q",t:"Meine Einerziffer ist doppelt so gross wie meine Zehnerziffer.",f:x=>x%10===2*digitsOf(x)[1]});
+    else pool.push({k:"q",t:H>E?"Meine Hunderterziffer ist grösser als meine Einerziffer.":H<E?"Meine Hunderterziffer ist kleiner als meine Einerziffer.":"Meine Hunderterziffer und meine Einerziffer sind gleich.",f:x=>{const d=digitsOf(x);return Math.sign(d[0]-d[2])===Math.sign(H-E);}});
+    let cand=[]; for(let x=100;x<=999;x++) cand.push(x);
+    const used=[];
+    for(const c of shuffle(pool)){ const next=cand.filter(c.f); if(next.length<cand.length){ used.push(c); cand=next; } if(cand.length===1) break; }
+    if(cand.length===1 && used.length>=3 && used.length<=5){
+      const order="hgl".split(""); used.sort((a,b)=>(order.includes(b.k)?1:0)-(order.includes(a.k)?1:0));
+      return {n, clues:used.map(c=>c.t)}; }
+  }
+  return {n:357, clues:["Ich liege zwischen 300 und 400.","Meine Zehnerziffer ist 5.","Ich bin ungerade.","Meine Einerziffer ist 7."]};
+}
+function riddleTask(area, api){
+  const r=makeRiddle(), B=blanks();
+  area.append(h("ol",{class:"riddle"},r.clues.map(t=>h("li",{},t))));
+  area.append(h("div",{class:"eq"},"Ich bin die Zahl",B.inp(r.n,{label:"Rätselzahl"})));
+  B.controls(area,api,{tip:"Lies einen Hinweis nach dem anderen. Schreib dir auf, welche Ziffern schon feststehen. Eine gerade Zahl endet mit 0, 2, 4, 6 oder 8."});
+}
+
+/* ---------- clock ---------- */
+const HW=["zwölf","eins","zwei","drei","vier","fünf","sechs","sieben","acht","neun","zehn","elf","zwölf"];
+const h12 = t => (Math.floor(t/60)%12)||12;
+function words(t){
+  const hh=h12(t), m=t%60, nh=hh%12+1, H=HW[hh], N=HW[nh];
+  const w = m===0 ? (hh===1?"ein Uhr":`${H} Uhr`) :
+    {5:`fünf nach ${H}`,10:`zehn nach ${H}`,15:`Viertel nach ${H}`,20:`zwanzig nach ${H}`,25:`fünf vor halb ${N}`,30:`halb ${N}`,
+     35:`fünf nach halb ${N}`,40:`zwanzig vor ${N}`,45:`Viertel vor ${N}`,50:`zehn vor ${N}`,55:`fünf vor ${N}`}[m];
+  return w[0].toUpperCase()+w.slice(1);
+}
+const fmtT = t => `${Math.floor(t/60)%24}.${pad2(t%60)} Uhr`;
+const digital = t => h("span",{class:"digital"},`${pad2(Math.floor(t/60)%24)}:${pad2(t%60)}`);
+function clockSVG(t, tap){
+  const g=s("svg",{viewBox:"0 0 200 200",class:"clock"+(tap?" tap":""),role:"img"});
+  g.append(s("circle",{cx:100,cy:100,r:94,class:"face"}));
+  for(let i=0;i<60;i++){ const a=i*6*Math.PI/180, big=i%5===0, r1=big?79:85;
+    g.append(s("line",{x1:100+r1*Math.sin(a),y1:100-r1*Math.cos(a),x2:100+90*Math.sin(a),y2:100-90*Math.cos(a),class:"tk"+(big?" big":"")})); }
+  for(let k=1;k<=12;k++){ const a=k*30*Math.PI/180; g.append(s("text",{x:100+65*Math.sin(a),y:100-65*Math.cos(a),class:"cnum"},String(k))); }
+  const hh=s("line",{x1:100,y1:100,x2:100,y2:52,class:"hh"}), mh=s("line",{x1:100,y1:100,x2:100,y2:24,class:"mh"});
+  g.append(hh,mh,s("circle",{cx:100,cy:100,r:6,class:"hub"}));
+  const C={svg:g};
+  C.set=t=>{ t=((t%720)+720)%720; C.t=t; hh.setAttribute("transform",`rotate(${t/2} 100 100)`); mh.setAttribute("transform",`rotate(${(t%60)*6} 100 100)`); g.setAttribute("aria-label","Uhr: "+words(t)); };
+  if(tap) g.addEventListener("click",e=>{ const r=g.getBoundingClientRect(), dx=(e.clientX-r.left)/r.width*200-100, dy=(e.clientY-r.top)/r.height*200-100;
+    if(dx*dx+dy*dy<15*15) return; let deg=Math.atan2(dx,-dy)*180/Math.PI; if(deg<0) deg+=360;
+    const m=(Math.round(deg/30)*5)%60; C.set(Math.floor(C.t/60)*60+m); tap(C.t); });
+  C.set(t); return C;
+}
+const randTime = () => rint(0,143)*5;
+function readClockTask(area, api){
+  const t=randTime(), hh=h12(t), m=t%60, B=blanks();
+  area.append(h("div",{class:"clockRow"}, clockSVG(t).svg,
+    h("div",{class:"eq"},B.inp(hh,{label:"Stunden",ok:v=>Number(v)%12===hh%12&&Number(v)<=24,tip:m===0?`Der kurze blaue Zeiger zeigt genau auf die ${hh}.`:`Der kurze blaue Zeiger steht zwischen ${hh} und ${hh%12+1}. Es gilt die Zahl, an der er schon vorbei ist: ${hh}.`}),".",
+      B.inp(m,{label:"Minuten",show:pad2(m),tip:"Der lange rote Zeiger zeigt die Minuten. Von einer Zahl zur nächsten sind es 5 Minuten: Zähle 5, 10, 15, …"}),"Uhr")));
+  B.controls(area,api);
+}
+function wordsTask(area, api){
+  const t=randTime(), m=t%60;
+  const cand=new Set([t+60,t-60]); const mir=Math.floor(t/60)*60+(60-m)%60;
+  if(m%30) { cand.add(mir); cand.add(mir+60); cand.add(mir-60); } else { cand.add(t+30); cand.add(t-30); }
+  const right=words(t), opts=[right];
+  for(const x of shuffle([...cand])){ const w=words(((x%720)+720)%720); if(!opts.includes(w)) opts.push(w); if(opts.length===4) break; }
+  area.append(clockSVG(t).svg);
+  const ans=h("div",{class:"answers"});
+  for(const o of shuffle(opts)){ const b=h("button",{class:"ans",on:{click:()=>{
+    if(o===right){ b.classList.add("right"); api.solved(); } else { b.classList.add("wrong"); api.say("Noch nicht. Schau zuerst auf den langen Zeiger: Ist er rechts (nach) oder links (vor)?","bad"); } }}},o); ans.append(b); }
+  area.append(ans);
+  area.append(h("div",{class:"btns"},
+    h("button",{class:"b soft",on:{click:()=>{ api.helped(); api.say("Tipp: «Halb vier» heisst: eine halbe Stunde bevor es vier Uhr ist, also 3.30 Uhr. «Viertel vor» heisst: noch 15 Minuten bis zur vollen Stunde.","info"); }}},"Tipp"),
+    h("button",{class:"b soft",on:{click:()=>{ api.helped(); for(const b of ans.children) if(b.textContent===right) b.classList.add("right"); api.say(`${right} ist ${h12(t)}.${pad2(m)} Uhr.`,"info"); }}},"Lösung zeigen")));
+}
+function setClockTask(area, api, v){
+  let t; do t=randTime(); while(t<60); // never 12:xx: the clock starts at 12 and 12:xx is confusing on a digital clock
+  const useWords=v%2===0, pm=!useWords&&rnd(2);
+  const C=clockSVG(0, ()=>api.say("","info"));
+  const shownT = pm ? t+720 : t;
+  area.append(h("p",{class:"question"},"Stelle die Uhr auf: ", useWords?h("span",{class:"target"},words(t)):digital(shownT)));
+  const step=d=>{ C.set(C.t+d); api.say("","info"); };
+  area.append(h("div",{class:"clockRow"}, C.svg, h("div",{class:"rows"},
+    h("div",{class:"btns"},h("button",{class:"b",on:{click:()=>step(-60)}},"− 1 Std"),h("button",{class:"b",on:{click:()=>step(60)}},"+ 1 Std")),
+    h("div",{class:"btns"},h("button",{class:"b",on:{click:()=>step(-5)}},"− 5 Min"),h("button",{class:"b",on:{click:()=>step(5)}},"+ 5 Min")),
+    h("p",{class:"small"},"Du kannst auch auf das Zifferblatt tippen, dann springt der lange Zeiger dorthin."))));
+  area.append(h("div",{class:"btns"},
+    h("button",{class:"b go",on:{click:()=>{ if(C.t===t%720) api.solved();
+      else if(C.t%60!==t%60) api.say("Der lange rote Zeiger (Minuten) steht noch nicht richtig.","bad");
+      else api.say("Die Minuten stimmen! Jetzt noch der kurze blaue Zeiger (Stunden).","bad"); }}},"Prüfen"),
+    h("button",{class:"b soft",on:{click:()=>{ api.helped(); api.say(`Tipp: Das ist ${Math.floor(t/60)%12||12}.${pad2(t%60)} Uhr. Der lange Zeiger zeigt auf die ${(t%60)/5||12}. ${t%60>=30?"Der kurze Zeiger steht schon nach der "+(Math.floor(t/60)%12||12)+".":""}`,"info"); }}},"Tipp"),
+    h("button",{class:"b soft",on:{click:()=>{ api.helped(); C.set(t); api.say(`So sieht ${Math.floor(t/60)%12||12}.${pad2(t%60)} Uhr aus.`,"info"); }}},"Lösung zeigen")));
+}
+const DAYPARTS=[{w:"am Morgen",from:6,to:11,add:0},{w:"am Nachmittag",from:1,to:5,add:12},{w:"am Abend",from:6,to:10,add:12}];
+function clock24Task(area, api){
+  const p=pick(DAYPARTS), hh=rint(p.from,p.to), m=rint(0,11)*5, t=hh*60+m, B=blanks();
+  area.append(h("p",{class:"ctx"},`Es ist ${p.w}.`));
+  area.append(h("div",{class:"clockRow"}, clockSVG(t).svg,
+    h("div",{class:"rows"},h("span",{},"Die Digitaluhr zeigt:"),
+      h("div",{class:"eq"},B.inp(hh+p.add,{label:"Stunden",tip:p.add?`Nach dem Mittag zählt man weiter: 1 Uhr nachmittags ist 13 Uhr. Rechne ${hh} + 12.`:"Am Morgen bleibt die Stunde gleich wie auf der Zeigeruhr."}),":",B.inp(m,{label:"Minuten",show:pad2(m)})))));
+  B.controls(area,api,{tip:"Der Tag hat 24 Stunden. Nach 12 Uhr mittags geht es mit 13, 14, 15 … weiter."});
+}
+function durText(d){ const hh=Math.floor(d/60), m=d%60; return hh===0?`${m} Minuten`:`${hh} Stunde${hh>1?"n":""}${m?` und ${m} Minuten`:""}`; }
+function durationTask(area, api, v){
+  const kind=v%3===2?2:rnd(2), B=blanks();
+  const d=pick([rint(3,11)*5, rint(3,11)*5, 60+rint(1,11)*5]);
+  let st; do st=rint(7*12,18*12)*5; while(kind!==2 && (st%60)+d%60<60 && rnd(3)); // usually cross the full hour
+  const en=st+d;
+  const durInputs=()=>d<60
+    ? [B.inp(d,{label:"Minuten",tip:`Rechne zuerst bis zur vollen Stunde: von ${fmtT(st)} bis ${fmtT(Math.ceil((st+1)/60)*60)} sind es ${Math.ceil((st+1)/60)*60-st} Minuten.`}),"Minuten"]
+    : [B.inp(Math.floor(d/60),{label:"Stunden"}),"Std",B.inp(d%60,{label:"Minuten",tip:"Zähle zuerst die ganzen Stunden, dann die restlichen Minuten. 1 Stunde hat 60 Minuten."}),"Min"];
+  const timeInputs=(t,tip)=>[B.inp(Math.floor(t/60),{label:"Stunden",ok:x=>Number(x)%12===Math.floor(t/60)%12&&Number(x)<=24,tip}),".",B.inp(t%60,{label:"Minuten",show:pad2(t%60),tip}),"Uhr"];
+  let story, inputs;
+  if(kind===0){ story=pick([`Der Zug fährt um ${fmtT(st)} ab und kommt um ${fmtT(en)} an. Wie lange dauert die Fahrt?`,
+      `Das Fussballtraining beginnt um ${fmtT(st)} und endet um ${fmtT(en)}. Wie lange dauert es?`,
+      `Lea liest von ${fmtT(st)} bis ${fmtT(en)} in ihrem Buch. Wie lange liest sie?`]); inputs=durInputs(); }
+  else if(kind===1){ story=pick([`Der Film beginnt um ${fmtT(st)}. Er dauert ${durText(d)}. Wann ist er zu Ende?`,
+      `Tim fährt um ${fmtT(st)} los. Die Fahrt dauert ${durText(d)}. Wann kommt er an?`,
+      `Die Theaterprobe beginnt um ${fmtT(st)} und dauert ${durText(d)}. Wann ist sie fertig?`]);
+    inputs=timeInputs(en,st%60?`Rechne zuerst bis zur vollen Stunde: ${fmtT(st)} + ${60-st%60} Minuten = ${fmtT(st+60-st%60)}. Dann rechnest du den Rest dazu.`:"Rechne zuerst die ganzen Stunden dazu, dann die Minuten."); }
+  else { story=pick([`Das Konzert endet um ${fmtT(en)}. Es hat ${durText(d)} gedauert. Wann hat es begonnen?`,
+      `Mia kommt um ${fmtT(en)} bei ihrer Oma an. Sie war ${durText(d)} unterwegs. Wann ist sie losgegangen?`]);
+    inputs=timeInputs(st,`Rechne rückwärts: Gehe zuerst zurück bis zur vollen Stunde ${fmtT(en-en%60)}. Dann ziehst du den Rest ab.`); }
+  area.append(h("p",{class:"story"},story), h("div",{class:"eq"},inputs));
+  B.controls(area,api,{tip:"Zeichne einen Zeitstrahl und mach Sprünge bis zur vollen Stunde."});
+}
+
+/* ---------- adding and subtracting ---------- */
+// split b into place-value steps; a single step that crosses a ten/hundred is split at the boundary
+function steps(a,op,b){
+  const parts=[100*Math.floor(b/100),10*(Math.floor(b/10)%10),b%10].filter(x=>x);
+  let seq=parts;
+  if(parts.length===1){ const p=parts[0], o=p<10?10:p<100?100:1000;
+    const gap = op==="+" ? (o-a%o)%o : a%o;
+    if(gap>0&&gap<p) seq=[gap,p-gap]; }
+  const out=[]; let cur=a;
+  for(const p of seq){ const nx=op==="+"?cur+p:cur-p; out.push(`${cur} ${showOp(op)} ${p} = ${nx}`); cur=nx; }
+  return out;
+}
+const opRes = (a,op,b) => op==="+"?a+b:a-b;
+function calcTip(a,op,b){ const st=steps(a,op,b);
+  if(st.length===1){ const p=b, o=p>=100?100:p>=10?10:1, nm={100:["Hunderter","H"],10:["Zehner","Z"],1:["Einer","E"]}[o], dp=p/o;
+    return `Schau nur auf die ${nm[0]}: ${Math.floor(a/o)} ${nm[1]} ${showOp(op)} ${dp} ${nm[1]} = ${Math.floor(opRes(a,op,b)/o)} ${nm[1]}.`; }
+  return `Rechne in Schritten: ${st[0]}. Und dann weiter: ${st.slice(1).map(x=>x.split(" = ")[0].replace(/^\d+/,"…")).join(", ")}.`; }
+function mentalProblem(k){
+  const op=rnd(2)?"+":"-";
+  for(;;){ let a,b;
+    if(k===0){ a=rint(1,8)*100; b=rint(1,9)*100; }
+    else if(k===1){ a=rint(10,98)*10; b=rint(1,9)*10; if(op==="+"?(a/10%10)+b/10>=10:(a/10%10)<b/10) continue; }
+    else if(k===2){ a=rint(101,999); b=rint(1,8)*100; if(a%10===0) continue; }
+    else if(k===3){ a=rint(10,98)*10; b=rint(2,9)*10; if(a%100===0) continue; if(op==="+"?(a/10%10)+b/10<10:(a/10%10)>=b/10) continue; }
+    else if(k===4){ a=rint(101,999); b=rint(2,9); if(op==="+"?a%10+b<10:a%10>=b) continue; }
+    else { a=rint(101,999); b=rint(1,9)*10; if(a%10===0) continue; }
+    const r=opRes(a,op,b); if(r>=0&&r<=1000&&(op==="+"||r>0)) return [a,op,b]; }
+}
+const showOp = op => op==="-"?"−":op;
+function mentalTask(area, api){
+  const B=blanks(), probs=shuffle([0,1,2,3,4,5]).map(mentalProblem);
+  area.append(h("div",{class:"rows"},probs.map(([a,op,b])=>h("div",{class:"eq"},`${a} ${showOp(op)} ${b} =`,B.inp(opRes(a,op,b),{tip:calcTip(a,op,b)})))));
+  B.controls(area,api);
+}
+function bigProblem(op){
+  for(;;){ if(op==="+"){ const a=rint(115,799), b=pick([rint(15,99),rint(110,499)]); if(a+b>1000) continue; if(a%10+b%10<10 && (a%100)+(b%100)<100) continue; return [a,op,b]; }
+    const a=rint(250,999), b=pick([rint(15,99),rint(110,a-40)]); if(a-b<10) continue; if(a%10>=b%10 && a%100>=b%100) continue; return [a,op,b]; }
+}
+function bigCalcTask(area, api){
+  const B=blanks(), probs=shuffle([bigProblem("+"),bigProblem("+"),bigProblem("-"),bigProblem("-")]);
+  area.append(h("div",{class:"rows"},probs.map(([a,op,b])=>h("div",{class:"eq"},`${a} ${showOp(op)} ${b} =`,B.inp(opRes(a,op,b),{tip:"Zerlege die zweite Zahl in Hunderter, Zehner und Einer: "+steps(a,op,b).join(", ")+"."})))));
+  B.controls(area,api,{tip:"Mach eine Nebenrechnung auf einem Blatt."});
+}
+function fillUpTask(area, api){
+  const B=blanks(), rows=[];
+  { let a; do a=rint(11,98)*10; while(a%100===0); const t=Math.ceil(a/100)*100; rows.push([`${a} +`,B.inp(t-a,{tip:`Wie viele Zehner fehlen bis ${t}?`}),`= ${t}`]); }
+  { let a; do a=rint(11,98)*10; while(a%100===0); rows.push([`${a} +`,B.inp(1000-a,{tip:`Rechne zuerst bis zum nächsten Hunderter (${Math.ceil(a/100)*100}), dann bis 1000.`}),"= 1000"]); }
+  { let a; do a=rint(101,989); while(a%10===0); const t=Math.ceil(a/100)*100; rows.push([`${a} +`,B.inp(t-a,{tip:`Zuerst bis zum nächsten Zehner (${Math.ceil(a/10)*10}), dann bis ${t}.`}),`= ${t}`]); }
+  { const a=rint(12,60)*10, c=a+rint(15,40)*10; rows.push([`${a} +`,B.inp(c-a,{tip:`Springe zuerst von ${a} zum nächsten Hunderter, dann weiter bis ${c}.`}),`= ${c}`]); }
+  { const c=rint(30,95)*10, b=rint(12,c/10-5)*10; rows.push([B.inp(c-b,{tip:`Welche Zahl plus ${b} gibt ${c}? Rechne ${c} − ${b}.`}),`+ ${b} = ${c}`]); }
+  area.append(h("div",{class:"rows"},rows.map(r=>h("div",{class:"eq"},r))));
+  B.controls(area,api);
+}
+// number wall: each brick is the sum of the two below. Given sets are chosen so that everything can be worked out.
+const WALL_GIVEN=[["b0","b1","b2"],["b0","b1","b2"],["b0","b2","m0"],["t","m0","b0"],["b1","m0","m1"],["t","b0","b1"]];
+function wallTask(area, api, v){
+  const b=[rint(5,23)*10+pick([0,0,rint(1,9)]),rint(5,23)*10+pick([0,rint(1,9)]),rint(5,23)*10+pick([0,0,rint(1,9)])];
+  const val={b0:b[0],b1:b[1],b2:b[2],m0:b[0]+b[1],m1:b[1]+b[2]}; val.t=val.m0+val.m1;
+  const given=WALL_GIVEN[v%WALL_GIVEN.length], B=blanks();
+  const brick=k=>h("div",{class:"brick"}, given.includes(k)?String(val[k]):B.inp(val[k],{label:"Mauerstein"}));
+  area.append(h("div",{class:"wall"},h("div",{class:"wrow"},brick("t")),h("div",{class:"wrow"},brick("m0"),brick("m1")),h("div",{class:"wrow"},brick("b0"),brick("b1"),brick("b2"))));
+  B.controls(area,api,{tip:"Zwei Steine nebeneinander ergeben zusammen den Stein darüber. Fehlt ein unterer Stein, rechnest du minus: oben − daneben."});
+}
+
+/* ---------- list of exercises ---------- */
+const GROUPS = {
+  strahl:{t:"Zahlenstrahl", d:"Wo liegt welche Zahl? Schau zuerst, wie gross ein Schritt von Strich zu Strich ist."},
+  ordnen:{t:"Zahlen ordnen", d:"Welche Zahl ist grösser? Vergleiche Hunderter, dann Zehner, dann Einer."},
+  unters:{t:"Zahlen untersuchen", d:"Hunderter, Zehner und Einer, Ziffernkarten und Zahlenrätsel."},
+  uhr:{t:"Uhrzeiten", d:"Uhr lesen, Uhr stellen und ausrechnen, wie lange etwas dauert."},
+  rechnen:{t:"Addieren und Subtrahieren", d:"Plus und minus bis 1000: im Kopf, in Schritten und in Zahlenmauern."},
+};
+const HOW_INP=["Tippe in ein Feld und schreib deine Zahl hinein.","Mit «Prüfen» siehst du, was schon stimmt: grün ist richtig, rot noch nicht."];
+const HOW_CLOCK="Der kurze blaue Zeiger zeigt die Stunden, der lange rote Zeiger die Minuten.";
+const EXS = [
+  {id:"strahl-lesen", g:"strahl", lv:"grund", t:"Zahlen ablesen", d:"Auf welche Zahl zeigt der Pfeil?", how:["Schau zuerst die beschrifteten Zahlen an.","Finde heraus, wie viel ein Schritt von Strich zu Strich ist.",...HOW_INP], lead:"Welche Zahlen gehören zu A, B und C?", make:readLineTask},
+  {id:"strahl-zeigen", g:"strahl", lv:"grund", t:"Zahlen einzeichnen", d:"Tippe auf die richtige Stelle", how:["Tippe auf den Strich, wo die Zahl liegt.","Tippst du daneben, siehst du, welche Zahl dort liegt."], lead:"Zeichne die Zahlen am Zahlenstrahl ein.", make:placeLineTask},
+  {id:"strahl-ausschnitt", g:"strahl", lv:"erw", t:"Ausschnitte", d:"Nur zwei Zahlen sind angeschrieben", how:["Zähle, wie viele Abstände zwischen den zwei angeschriebenen Zahlen liegen.","Rechne aus, wie gross ein Abstand ist. Dann zählst du weiter, auch rückwärts."], lead:"Welche Zahlen gehören zu A, B und C?", make:cutLineTask},
+  {id:"ordnen", g:"ordnen", lv:"grund", t:"Der Grösse nach", d:"Fünf Zahlen in die richtige Reihe", how:["Tippe die Zahlen in der richtigen Reihenfolge an.","Achte darauf, ob es vom kleinsten oder vom grössten her geht."], lead:"Ordne die Zahlen.", make:orderTask},
+  {id:"vergleichen", g:"ordnen", lv:"grund", t:"Grösser, kleiner, gleich", d:"<, = oder >", how:["Tippe auf den Kreis zwischen den Zahlen, bis das richtige Zeichen drin steht.","< heisst «kleiner als», > heisst «grösser als», = heisst «gleich»."], lead:"Setze das richtige Zeichen ein.", make:compareTask},
+  {id:"nachbarn", g:"ordnen", lv:"grund", t:"Nachbarzahlen", d:"Vorgänger, Nachbarzehner, Nachbarhunderter", how:HOW_INP, lead:"Schreib die Nachbarzahlen auf.", make:neighbourTask},
+  {id:"stellenwerte", g:"unters", lv:"grund", t:"Hunderter, Zehner, Einer", d:"Welche Zahl ist dargestellt?", how:["Platte = 100, Stange = 10, Würfelchen = 1.",...HOW_INP], lead:"Wie heisst die Zahl?", make:blocksTask},
+  {id:"buendeln", g:"unters", lv:"erw", t:"Bündeln", d:"Mehr als 9 Zehner oder Einer", how:["10 Einer sind 1 Zehner. 10 Zehner sind 1 Hunderter.","H = Hunderter, Z = Zehner, E = Einer."], lead:"Welche Zahl ist es?", make:bundleTask},
+  {id:"ziffernkarten", g:"unters", lv:"erw", t:"Ziffernkarten", d:"Alle Zahlen aus drei Karten", how:["Tippe drei Karten nacheinander an. So entsteht eine Zahl.","Finde alle dreistelligen Zahlen, die man mit den Karten legen kann."], lead:"Lege alle möglichen Zahlen.", make:digitCardsTask},
+  {id:"raetsel", g:"unters", lv:"erw", t:"Zahlenrätsel", d:"Welche Zahl bin ich?", how:["Lies alle Hinweise. Nur eine Zahl passt zu allen."], lead:"Welche Zahl ist gemeint?", make:riddleTask},
+  {id:"uhr-lesen", g:"uhr", lv:"grund", t:"Uhr ablesen", d:"Wie spät ist es?", how:[HOW_CLOCK,...HOW_INP], lead:"Wie spät ist es?", make:readClockTask},
+  {id:"uhr-worte", g:"uhr", lv:"grund", t:"Viertel nach, halb, Viertel vor", d:"Die Uhrzeit in Worten", how:[HOW_CLOCK,"Wähle aus, wie man die Uhrzeit sagt."], lead:"Wie sagt man?", make:wordsTask},
+  {id:"uhr-stellen", g:"uhr", lv:"grund", t:"Uhr stellen", d:"Bring die Zeiger an den richtigen Ort", how:[HOW_CLOCK,"Stelle die Zeiger mit den Knöpfen. Der kurze Zeiger wandert mit, wie bei einer echten Uhr."], lead:"Stelle die Uhr.", make:setClockTask},
+  {id:"uhr-24", g:"uhr", lv:"erw", t:"Digitaluhr und 24 Stunden", d:"13 Uhr, 14 Uhr, …", how:[HOW_CLOCK,"Am Nachmittag und am Abend zählt die Digitaluhr nach 12 weiter: 13, 14, 15 …"], lead:"Was zeigt die Digitaluhr?", make:clock24Task},
+  {id:"zeitspannen", g:"uhr", lv:"erw", t:"Wie lange dauert es?", d:"Mit Uhrzeiten rechnen", how:["Rechne zuerst bis zur vollen Stunde.","1 Stunde = 60 Minuten.",...HOW_INP], lead:"Lies die Geschichte und rechne.", make:durationTask},
+  {id:"kopfrechnen", g:"rechnen", lv:"grund", t:"Kopfrechnen bis 1000", d:"Plus und minus mit Hundertern, Zehnern, Einern", how:HOW_INP, lead:"Rechne im Kopf.", make:mentalTask},
+  {id:"ergaenzen", g:"rechnen", lv:"grund", t:"Ergänzen", d:"Wie viel fehlt?", how:["Springe zuerst bis zum nächsten Zehner oder Hunderter.",...HOW_INP], lead:"Welche Zahl fehlt?", make:fillUpTask},
+  {id:"gross-rechnen", g:"rechnen", lv:"erw", t:"Grosse Plus- und Minusaufgaben", d:"Mit Übergängen", how:["Rechne in Schritten: zuerst die Hunderter, dann die Zehner, dann die Einer.","Ein Blatt für Nebenrechnungen hilft."], lead:"Rechne. Schreib Zwischenschritte auf ein Blatt.", make:bigCalcTask},
+  {id:"zahlenmauern", g:"rechnen", lv:"erw", t:"Zahlenmauern", d:"Plus und minus gemischt", how:["Zwei Steine nebeneinander ergeben zusammen den Stein darüber.","Manchmal musst du rückwärts rechnen (minus)."], lead:"Fülle die Zahlenmauer aus.", make:wallTask},
+];
+
+/* ---------- pages ---------- */
+const app=document.getElementById("app");
+function home(){
+  app.innerHTML="";
+  const solved=EXS.filter(e=>prog[e.id]).length;
+  app.append(h("header",{class:"intro"},
+    h("h1",{},"Zahlen & Uhr"),
+    h("p",{},"Übungen zum Zahlenstrahl, zum Ordnen und Untersuchen von Zahlen bis 1000, zu Uhrzeiten und zum Plus- und Minusrechnen, für die Mathe-Lernzielkontrolle im 2. Quintal der 3. Klasse. Jede Übung kannst du immer wieder neu starten."),
+    h("p",{class:"total"}, solved ? `${solved} von ${EXS.length} Übungen schon gelöst!` : `${EXS.length} Übungen warten auf dich.`),
+    h("div",{class:"legend"}, h("span",{},h("i",{style:"background:var(--yellow)"}),"Grundanforderungen"), h("span",{},h("i",{style:"background:var(--green)"}),"erweiterte Anforderungen"),
+      h("span",{},plant(0),plant(1),plant(2),plant(3)," wächst mit jeder Lösung ohne Hilfe"))));
+  for(const gk in GROUPS){ const gr=GROUPS[gk], cards=h("div",{class:"cards"});
+    EXS.forEach((e,i)=>{ if(e.g!==gk) return;
+      cards.append(h("button",{class:"card",on:{click:()=>go(i)}}, h("span",{class:"bar"+(e.lv==="grund"?" grund":"")}),
+        h("span",{class:"txt"},h("span",{class:"num"},"Übung "+(i+1)),h("span",{class:"ttl"},e.t),h("span",{class:"dsc"},e.d)),
+        h("span",{class:"plant"},plant(stage(e.id))))); });
+    app.append(h("section",{class:"group"},h("h2",{},gr.t),h("p",{},gr.d),cards)); }
+  app.append(h("p",{class:"small",style:"margin-top:28px"},"Tipp für Eltern: Bei den Uhrzeiten hilft eine echte Uhr mit Zeigern. Beim Rechnen dürfen die Kinder Zwischenschritte auf ein Blatt schreiben. ",
+    h("a",{href:"index.html"},"Zu den Übungen «Raum & Muster» (1. Quintal) →")));
+}
+function exercise(i){
+  const ex=EXS[i]; let variant=rnd(6), helped=false, solvedNow=false;
+  app.innerHTML="";
+  const fb=h("p",{class:"feedback","aria-live":"polite"});
+  const area=h("div",{class:"task"});
+  const api={
+    say(msg,kind){ fb.textContent=msg; fb.className="feedback "+(kind||""); },
+    helped(){ helped=true; },
+    solved(){ if(!solvedNow){ solvedNow=true; if(!helped) addSolved(ex.id); }
+      api.say(pick(PRAISE)+(helped?" Jetzt noch eine neue Aufgabe ohne Hilfe?":""),"good"); }
+  };
+  const load=()=>{ area.innerHTML=""; helped=false; solvedNow=false; api.say("",""); ex.make(area,api,variant); };
+  app.append(h("button",{class:"back",on:{click:()=>go(-1)}},"← Alle Übungen"));
+  app.append(h("article",{class:"sheet"}, h("span",{class:"bar"+(ex.lv==="grund"?" grund":"")}),
+    h("div",{class:"inner"},
+      h("div",{class:"head"}, h("span",{class:"level"},ex.lv==="grund"?"Grundanforderungen":"erweiterte Anforderungen"),
+        h("span",{class:"num"},"Übung "+(i+1)+" · "+GROUPS[ex.g].t), h("h2",{},ex.t)),
+      h("p",{class:"question"},ex.lead),
+      h("div",{class:"howto"},h("b",{},"So geht's"),h("ul",{},ex.how.map(t=>h("li",{},t)))),
+      area, fb)));
+  app.append(h("div",{class:"foot"},
+    h("button",{class:"b",on:{click:()=>{ variant++; load(); }}},"Neue Aufgabe"),
+    i<EXS.length-1 ? h("button",{class:"b go",on:{click:()=>go(i+1)}},"Nächste Übung →") : h("button",{class:"b go",on:{click:()=>go(-1)}},"Zur Übersicht")));
+  load();
+}
+function go(i){ const tok = i<0 ? "" : EXS[i].id; try{ if(location.hash.slice(1)!==tok) history.replaceState(null,"",tok?"#"+tok:location.pathname+location.search); }catch(e){} render(i); window.scrollTo(0,0); }
+function render(i){ if(i<0) home(); else exercise(i); }
+render(EXS.findIndex(e=>e.id===location.hash.slice(1)));
+window.addEventListener("hashchange",()=>render(EXS.findIndex(e=>e.id===location.hash.slice(1))));
+</script>
+</body></html>

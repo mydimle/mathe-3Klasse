@@ -1,9 +1,11 @@
-# Raum & Muster
+# Mathe 3. Klasse
 
-Interaktive Mathe-Übungen für die 3. Klasse (Raumvorstellung und Muster), angelehnt an die Aufgaben der Lernzielkontrolle «Mathe LZK 3.3».
-Eine einzige statische Seite (`index.html`), ohne Abhängigkeiten. Läuft auf Handy, Tablet und Computer.
+Interaktive Mathe-Übungen für die 3. Klasse, als Vorbereitung auf die Lernzielkontrollen. Zwei statische Seiten ohne Abhängigkeiten. Läuft auf Handy, Tablet und Computer.
 
-## Übungen
+- `index.html`: **Raum & Muster** (1. Quintal, angelehnt an «Mathe LZK 3.3»)
+- `zahlen-uhr.html`: **Zahlen & Uhr** (2. Quintal: Zahlenstrahl, Zahlen ordnen, Zahlen untersuchen, Uhrzeiten, Addieren und Subtrahieren)
+
+## Raum & Muster (`index.html`)
 
 | # | Übung | Was geübt wird |
 |---|-------|----------------|
@@ -23,6 +25,34 @@ Eine einzige statische Seite (`index.html`), ohne Abhängigkeiten. Läuft auf Ha
 
 Jede Übung hat «Prüfen», «Tipp», «Lösung zeigen» und «Neue Aufgabe». Gelöste Übungen (ohne Hilfe) lassen das Pflänzchen auf der Übersicht wachsen; der Fortschritt bleibt im Browser gespeichert.
 
+## Zahlen & Uhr (`zahlen-uhr.html`)
+
+Zahlenraum bis 1000, passend zu den Mathe-Themen im Quintalsbrief für das 2. Quintal.
+
+| # | Übung | Was geübt wird |
+|---|-------|----------------|
+| 1 | Zahlen ablesen | Zahlen am Zahlenstrahl ablesen (0–1000, 200er- und 100er-Ausschnitt) |
+| 2 | Zahlen einzeichnen | Auf die richtige Stelle am Zahlenstrahl tippen |
+| 3 | Ausschnitte | Nur zwei Zahlen angeschrieben: Schrittgrösse selbst finden |
+| 4 | Der Grösse nach | Fünf Zahlen ordnen (auf- oder absteigend) |
+| 5 | Grösser, kleiner, gleich | <, =, > auch mit «300 + 40 + 5» und «4 H 5 Z» |
+| 6 | Nachbarzahlen | Vorgänger/Nachfolger, Nachbarzehner, Nachbarhunderter |
+| 7 | Hunderter, Zehner, Einer | Zahl aus Platten, Stangen und Würfelchen |
+| 8 | Bündeln | z. B. 3 H 14 Z 5 E, «6 H 2 E», «42 Z» |
+| 9 | Ziffernkarten | Alle dreistelligen Zahlen aus drei Karten legen (auch mit 0) |
+| 10 | Zahlenrätsel | «Welche Zahl bin ich?», jedes Mal ein neues Rätsel |
+| 11 | Uhr ablesen | Zeigeruhr lesen |
+| 12 | Viertel nach, halb, Viertel vor | Uhrzeit in Worten |
+| 13 | Uhr stellen | Zeiger stellen nach Worten oder Digitalzeit |
+| 14 | Digitaluhr und 24 Stunden | Nachmittags und abends: 13, 14, … Uhr |
+| 15 | Wie lange dauert es? | Zeitspannen, Endzeit, Startzeit |
+| 16 | Kopfrechnen bis 1000 | Plus und minus mit H, Z, E, mit und ohne Übergang |
+| 17 | Ergänzen | Bis zum Hunderter, bis 1000, Platzhalter |
+| 18 | Grosse Plus- und Minusaufgaben | Dreistellig mit Übergängen, Tipps zeigen die Schritte |
+| 19 | Zahlenmauern | Plus und minus gemischt |
+
+Gleiche Bedienung wie bei Raum & Muster: «Prüfen», «Tipp», «Lösung zeigen», «Neue Aufgabe», Pflänzchen für den Fortschritt.
+
 ## Starten
 
-`index.html` im Browser öffnen. Oder GitHub Pages einschalten: *Settings → Pages → Deploy from a branch → main / (root)*.
+`index.html` oder `zahlen-uhr.html` im Browser öffnen. Oder GitHub Pages einschalten: *Settings → Pages → Deploy from a branch → main / (root)*.
