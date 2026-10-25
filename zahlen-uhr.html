@@ -374,17 +374,6 @@ function compareTask(area, api){
     h("button",{class:"b soft",on:{click:()=>{ api.helped(); for(const r of B){ r.sym.textContent=r.ans; r.sym.className="sym "+(r.sel===r.ans?"ok":"shown"); } api.say("Die gestrichelten Zeichen sind die Lösung.","info"); }}},"Lösung zeigen")));
 }
 
-function neighbourTask(area, api){
-  let n; do n=rint(101,989); while(n%10===0);
-  const B=blanks(), z=Math.floor(n/10)*10, hh=Math.floor(n/100)*100;
-  const row=(lbl,a,b,tip)=>h("div",{class:"eq"},h("span",{class:"lbl"},lbl),B.inp(a,{tip}),h("span",{class:"lt"},"<"),String(n),h("span",{class:"lt"},"<"),B.inp(b,{tip}));
-  area.append(h("div",{class:"rows"},
-    row("Vorgänger und Nachfolger",n-1,n+1,"Der Vorgänger ist 1 kleiner, der Nachfolger 1 grösser."),
-    row("Nachbarzehner",z,z+10,`Nachbarzehner enden mit 0. Welche Zehnerzahlen liegen direkt vor und nach ${n}?`),
-    row("Nachbarhunderter",hh,hh+100,`Nachbarhunderter enden mit 00. ${n} liegt zwischen welchen Hunderterzahlen?`)));
-  B.controls(area,api);
-}
-
 /* ---------- exploring numbers ---------- */
 function blocksSVG(H,Z,E){
   const c=8, P=10*c, g=s("svg",{class:"blocks",role:"img","aria-label":`${H} Hunderterplatten, ${Z} Zehnerstangen, ${E} Einerwürfel`});
@@ -661,7 +650,6 @@ const EXS = [
   {id:"strahl-ausschnitt", g:"strahl", lv:"erw", t:"Ausschnitte", d:"Nur zwei Zahlen sind angeschrieben", how:["Zähle, wie viele Abstände zwischen den zwei angeschriebenen Zahlen liegen.","Rechne aus, wie gross ein Abstand ist. Dann zählst du weiter, auch rückwärts."], lead:"Welche Zahlen gehören zu A, B und C?", make:cutLineTask},
   {id:"ordnen", g:"ordnen", lv:"grund", t:"Der Grösse nach", d:"Fünf Zahlen in die richtige Reihe", how:["Tippe die Zahlen in der richtigen Reihenfolge an.","Achte darauf, ob es vom kleinsten oder vom grössten her geht."], lead:"Ordne die Zahlen.", make:orderTask},
   {id:"vergleichen", g:"ordnen", lv:"grund", t:"Grösser, kleiner, gleich", d:"<, = oder >", how:["Tippe auf den Kreis zwischen den Zahlen, bis das richtige Zeichen drin steht.","< heisst «kleiner als», > heisst «grösser als», = heisst «gleich»."], lead:"Setze das richtige Zeichen ein.", make:compareTask},
-  {id:"nachbarn", g:"ordnen", lv:"grund", t:"Nachbarzahlen", d:"Vorgänger, Nachbarzehner, Nachbarhunderter", how:HOW_INP, lead:"Schreib die Nachbarzahlen auf.", make:neighbourTask},
   {id:"stellenwerte", g:"unters", lv:"grund", t:"Hunderter, Zehner, Einer", d:"Welche Zahl ist dargestellt?", how:["Platte = 100, Stange = 10, Würfelchen = 1.",...HOW_INP], lead:"Wie heisst die Zahl?", make:blocksTask},
   {id:"buendeln", g:"unters", lv:"erw", t:"Bündeln", d:"Mehr als 9 Zehner oder Einer", how:["10 Einer sind 1 Zehner. 10 Zehner sind 1 Hunderter.","H = Hunderter, Z = Zehner, E = Einer."], lead:"Welche Zahl ist es?", make:bundleTask},
   {id:"ziffernkarten", g:"unters", lv:"erw", t:"Ziffernkarten", d:"Alle Zahlen aus drei Karten", how:["Tippe drei Karten nacheinander an. So entsteht eine Zahl.","Finde alle dreistelligen Zahlen, die man mit den Karten legen kann."], lead:"Lege alle möglichen Zahlen.", make:digitCardsTask},

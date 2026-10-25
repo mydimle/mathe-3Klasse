@@ -36,20 +36,19 @@ Zahlenraum bis 1000, passend zu den Mathe-Themen im Quintalsbrief für das 2. Qu
 | 3 | Ausschnitte | Nur zwei Zahlen angeschrieben: Schrittgrösse selbst finden |
 | 4 | Der Grösse nach | Fünf Zahlen ordnen (auf- oder absteigend) |
 | 5 | Grösser, kleiner, gleich | <, =, > auch mit «300 + 40 + 5» und «4 H 5 Z» |
-| 6 | Nachbarzahlen | Vorgänger/Nachfolger, Nachbarzehner, Nachbarhunderter |
-| 7 | Hunderter, Zehner, Einer | Zahl aus Platten, Stangen und Würfelchen |
-| 8 | Bündeln | z. B. 3 H 14 Z 5 E, «6 H 2 E», «42 Z» |
-| 9 | Ziffernkarten | Alle dreistelligen Zahlen aus drei Karten legen (auch mit 0) |
-| 10 | Zahlenrätsel | «Welche Zahl bin ich?», jedes Mal ein neues Rätsel |
-| 11 | Uhr ablesen | Zeigeruhr lesen |
-| 12 | Viertel nach, halb, Viertel vor | Uhrzeit in Worten |
-| 13 | Uhr stellen | Zeiger stellen nach Worten oder Digitalzeit |
-| 14 | Digitaluhr und 24 Stunden | Nachmittags und abends: 13, 14, … Uhr |
-| 15 | Wie lange dauert es? | Zeitspannen, Endzeit, Startzeit |
-| 16 | Kopfrechnen bis 1000 | Plus und minus mit H, Z, E, mit und ohne Übergang |
-| 17 | Ergänzen | Bis zum Hunderter, bis 1000, Platzhalter |
-| 18 | Grosse Plus- und Minusaufgaben | Dreistellig mit Übergängen, Tipps zeigen die Schritte |
-| 19 | Zahlenmauern | Plus und minus gemischt |
+| 6 | Hunderter, Zehner, Einer | Zahl aus Platten, Stangen und Würfelchen |
+| 7 | Bündeln | z. B. 3 H 14 Z 5 E, «6 H 2 E», «42 Z» |
+| 8 | Ziffernkarten | Alle dreistelligen Zahlen aus drei Karten legen (auch mit 0) |
+| 9 | Zahlenrätsel | «Welche Zahl bin ich?», jedes Mal ein neues Rätsel |
+| 10 | Uhr ablesen | Zeigeruhr lesen |
+| 11 | Viertel nach, halb, Viertel vor | Uhrzeit in Worten |
+| 12 | Uhr stellen | Zeiger stellen nach Worten oder Digitalzeit |
+| 13 | Digitaluhr und 24 Stunden | Nachmittags und abends: 13, 14, … Uhr |
+| 14 | Wie lange dauert es? | Zeitspannen, Endzeit, Startzeit |
+| 15 | Kopfrechnen bis 1000 | Plus und minus mit H, Z, E, mit und ohne Übergang |
+| 16 | Ergänzen | Bis zum Hunderter, bis 1000, Platzhalter |
+| 17 | Grosse Plus- und Minusaufgaben | Dreistellig mit Übergängen, Tipps zeigen die Schritte |
+| 18 | Zahlenmauern | Plus und minus gemischt |
 
 Gleiche Bedienung wie bei Raum & Muster: «Prüfen», «Tipp», «Lösung zeigen», «Neue Aufgabe», Pflänzchen für den Fortschritt.
 
